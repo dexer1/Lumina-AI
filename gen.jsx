@@ -32,6 +32,7 @@ import heroArtwork from './assets/hero-cinematic.png';
 import galleryArtwork from './assets/gallery-sheet.png';
 import GeneratorStudio from './GeneratorStudio.jsx';
 import AudioStudio from './AudioStudio.jsx';
+import BlueprintsView from './BlueprintsView.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -137,21 +138,35 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [view, setView] = useState('home');
   const [studioPrompt, setStudioPrompt] = useState('');
+  const [studioTab, setStudioTab] = useState('image');
 
   const handleGenerate = () => {
     if (!prompt.trim()) return;
     setStudioPrompt(prompt.trim());
+    setStudioTab(creationType.toLowerCase() === 'video' ? 'video' : (creationType.toLowerCase() === '3d' ? '3d' : 'image'));
     setView('studio');
   };
 
   const handleNavigation = (label) => {
     setActiveNav(label);
-    if (label === 'Image') setView('studio');
-    if (label === 'Audio') setView('audio');
+    if (label === 'Image' || label === 'Video' || label === '3D') {
+      setStudioTab(label.toLowerCase());
+      setView('studio');
+    } else if (label === 'Audio') {
+      setView('audio');
+    } else if (label === 'Blueprints') {
+      setView('blueprints');
+    } else {
+      setView('home');
+    }
   };
 
   if (view === 'studio') {
-    return <GeneratorStudio initialPrompt={studioPrompt} onBack={() => setView('home')} />;
+    return <GeneratorStudio initialPrompt={studioPrompt} initialTab={studioTab} onBack={() => setView('home')} onNavigate={(v) => setView(v)} />;
+  }
+  
+  if (view === 'blueprints') {
+    return <BlueprintsView onBack={() => setView('home')} />;
   }
 
   if (view === 'audio') {
@@ -214,10 +229,16 @@ export default function App() {
                   className={`creation-type ${creationType === label ? 'creation-type--active' : ''}`}
                   onClick={() => {
                     setCreationType(label);
-                    if (label === 'Image') setView('studio');
-                    if (label === 'Audio') {
+                    if (label === 'Image' || label === 'Video' || label === '3D') {
+                      setActiveNav(label);
+                      setStudioTab(label.toLowerCase());
+                      setView('studio');
+                    } else if (label === 'Audio') {
                       setActiveNav('Audio');
                       setView('audio');
+                    } else if (label === 'Blueprints') {
+                      setActiveNav('Blueprints');
+                      setView('blueprints');
                     }
                   }}
                 >
