@@ -35,6 +35,7 @@ import AudioStudio from './AudioStudio.jsx';
 import BlueprintsView from './BlueprintsView.jsx';
 import LibraryView from './LibraryView.jsx';
 import FlowStateView from './FlowStateView.jsx';
+import UpscalerView from './UpscalerView.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -160,6 +161,8 @@ export default function App() {
       setView('audio');
     } else if (label === 'Flow State') {
       setView('flow');
+    } else if (label === 'Upscaler') {
+      setView('upscaler');
     } else if (label === 'Blueprints') {
       setView('blueprints');
     } else {
@@ -189,6 +192,17 @@ export default function App() {
           setView('home');
         }}
         onNavigate={handleNavigation}
+      />
+    );
+  }
+
+  if (view === 'upscaler') {
+    return (
+      <UpscalerView
+        onBack={() => {
+          setActiveNav('Home');
+          setView('home');
+        }}
       />
     );
   }
@@ -272,6 +286,9 @@ export default function App() {
                     } else if (label === 'Blueprints') {
                       setActiveNav('Blueprints');
                       setView('blueprints');
+                    } else if (label === 'Upscaler') {
+                      setActiveNav('Upscaler');
+                      setView('upscaler');
                     }
                   }}
                 >
