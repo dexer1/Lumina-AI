@@ -23,7 +23,6 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  Sparkles,
   Square,
   Video,
   Wand2,
@@ -31,6 +30,7 @@ import {
 } from 'lucide-react';
 import './LibraryView.css';
 import MorePanel from './MorePanel.jsx';
+import LuminaLogo from './LuminaLogo.jsx';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: Home },
@@ -91,7 +91,7 @@ function LibrarySidebar({ onNavigate, moreOpen, onToggleMore }) {
         aria-label="Lumina home"
         onClick={() => onNavigate('Home')}
       >
-        <span><Sparkles size={24} strokeWidth={1.45} /></span>
+        <span><LuminaLogo size={27} /></span>
       </button>
 
       <nav className="library-nav" aria-label="Library navigation">

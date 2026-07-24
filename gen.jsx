@@ -40,6 +40,7 @@ import PlansView from './PlansView.jsx';
 import ApiView from './ApiView.jsx';
 import WhatsNewView from './WhatsNewView.jsx';
 import MorePanel from './MorePanel.jsx';
+import LuminaLogo from './LuminaLogo.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -112,7 +113,7 @@ function Sidebar({ active, onSelect, mobileOpen, onClose, moreOpen, onToggleMore
       </button>
 
       <button className="brand" aria-label="Lumina home" onClick={() => onSelect('Home')}>
-        <span className="brand-mark"><Sparkles size={25} strokeWidth={1.7} /></span>
+        <span className="brand-mark"><LuminaLogo size={29} /></span>
       </button>
 
       <nav className="nav-list" aria-label="Main navigation">
@@ -296,7 +297,7 @@ export default function App() {
           <button className="icon-button" onClick={() => setMenuOpen(true)} aria-label="Open navigation">
             <Menu size={20} />
           </button>
-          <div className="mobile-logo"><Sparkles size={16} /> LUMINA</div>
+          <div className="mobile-logo"><LuminaLogo size={17} /> LUMINA</div>
           <button className="icon-button" aria-label="Notifications"><Bell size={19} /></button>
         </header>
 
@@ -408,7 +409,7 @@ export default function App() {
           </section>
 
           <footer>
-            <span><Sparkles size={15} /> LUMINA</span>
+            <span><LuminaLogo size={16} /> LUMINA</span>
             <p>Imagine it. Create it. Make it yours.</p>
           </footer>
         </div>

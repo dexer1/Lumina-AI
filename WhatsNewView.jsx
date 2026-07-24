@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import './WhatsNewView.css';
 import MorePanel from './MorePanel.jsx';
+import LuminaLogo from './LuminaLogo.jsx';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: Home },
@@ -92,7 +93,7 @@ function WhatsNewSidebar({ onNavigate, moreOpen, onToggleMore }) {
   return (
     <aside className="whats-new-sidebar">
       <button type="button" className="whats-new-brand" aria-label="Lumina home" onClick={() => onNavigate('Home')}>
-        <span><Sparkles size={24} strokeWidth={1.45} /></span>
+        <span><LuminaLogo size={27} /></span>
       </button>
 
       <nav className="whats-new-nav" aria-label="What's New navigation">

@@ -13,11 +13,11 @@ import {
   Play,
   RefreshCcw,
   Search,
-  Sparkles,
   Video,
   Workflow,
 } from 'lucide-react';
 import './AudioStudio.css';
+import LuminaLogo from './LuminaLogo.jsx';
 
 const AUDIO_TABS = [
   { label: 'Image', icon: ImageIcon },
@@ -103,7 +103,7 @@ export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
       <header className="audio-topbar">
         <button type="button" className="audio-brand" onClick={onBack} aria-label="Back to home">
           <ArrowLeft size={19} />
-          <Sparkles size={18} className="audio-brand-mark" />
+          <LuminaLogo size={19} className="audio-brand-mark" />
           <strong>LUMINA.AI</strong>
         </button>
 
