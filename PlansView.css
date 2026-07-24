@@ -1,0 +1,548 @@
+.plans-view {
+  --plans-bg: #080909;
+  --plans-panel: #111212;
+  --plans-surface: #202121;
+  --plans-line: rgba(255,255,255,.15);
+  --plans-muted: #a0a1a3;
+  --plans-violet: #7058ee;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--plans-bg);
+  color: #f4f4f4;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.plans-view * { box-sizing: border-box; }
+.plans-view button { color: inherit; font: inherit; }
+
+.plans-back {
+  position: fixed;
+  z-index: 80;
+  top: 17px;
+  left: 27px;
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(8,9,9,.7);
+  display: grid;
+  place-items: center;
+  color: #a8aaac !important;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.plans-hero {
+  padding: 79px 24px 0;
+  text-align: center;
+}
+
+.plans-hero > h1 {
+  margin: 0;
+  font-size: 48px;
+  line-height: .95;
+  letter-spacing: -.035em;
+  font-weight: 1000;
+}
+
+.plans-hero > p {
+  margin: 24px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #d0d1d2;
+  font-size: 12px;
+}
+
+.plans-hero > p svg { color: #aeb0b2; }
+
+.plans-billing {
+  width: max-content;
+  height: 34px;
+  margin: 27px auto 30px;
+  padding: 3px;
+  border-radius: 18px;
+  background: #242525;
+  display: flex;
+}
+
+.plans-billing button {
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 15px;
+  background: transparent;
+  color: #a2a4a6;
+  font-size: 10px;
+  font-weight: 780;
+  cursor: pointer;
+}
+
+.plans-billing button.is-active {
+  border-color: #7b65f5;
+  background: #2b2740;
+  color: #fff;
+}
+
+.plans-billing small {
+  margin-left: 9px;
+  font-size: 8px;
+}
+
+.plans-grid {
+  width: 1135px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.plans-card {
+  position: relative;
+  min-height: 770px;
+  padding: 18px 12px 13px;
+  border: 1px solid #4a4b4c;
+  border-radius: 17px 17px 0 0;
+  background: linear-gradient(180deg, #101111, #171818 45%, #202121);
+  text-align: center;
+}
+
+.plans-card.is-best {
+  border: 3px solid #a69af8;
+  border-top-width: 26px;
+  padding: 15px 10px 11px;
+  box-shadow: 0 0 0 1px rgba(116, 93, 242, .23);
+}
+
+.plans-best-label {
+  position: absolute;
+  top: -23px;
+  left: 0;
+  width: 100%;
+  color: #070707;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.plans-card h2 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.1;
+  letter-spacing: -.045em;
+  font-weight: 950;
+}
+
+.plans-price {
+  min-height: 111px;
+  padding-top: 31px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.plans-price del {
+  color: #6f7173;
+  font-size: 20px;
+}
+
+.plans-price strong {
+  font-size: 31px;
+  line-height: 1;
+}
+
+.plans-price > span {
+  font-size: 10px;
+}
+
+.plans-price small {
+  flex-basis: 100%;
+  margin-top: -1px;
+  color: #cbcccd;
+  font-size: 8px;
+}
+
+.plans-team-icon {
+  height: 111px;
+  margin: 0 auto;
+  color: #735ef3;
+}
+
+.plans-subscribe {
+  width: 100%;
+  height: 31px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--plans-violet);
+  font-size: 10px !important;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.plans-subscribe.is-team {
+  background: #2c2d2d;
+  color: #c9cacb;
+}
+
+.plans-perfect {
+  min-height: 97px;
+  padding: 24px 6px 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.plans-perfect > span {
+  color: #755ff2;
+  font-size: 10px;
+}
+
+.plans-perfect > strong {
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.plans-perfect > small {
+  color: #bcbec0;
+  font-size: 8px;
+}
+
+.plans-card ul {
+  min-height: 405px;
+  margin: 0;
+  padding: 12px 10px;
+  border-radius: 12px 12px 0 0;
+  background: #222323;
+  display: grid;
+  align-content: start;
+  gap: 13px;
+  list-style: none;
+  text-align: left;
+}
+
+.plans-card li {
+  color: #d0d1d2;
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 7px;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.plans-card li svg {
+  margin-top: 1px;
+  color: #898b8d;
+}
+
+.plans-comparison {
+  width: 1145px;
+  margin: 78px auto 0;
+}
+
+.plans-comparison-head {
+  position: sticky;
+  z-index: 50;
+  top: 0;
+  display: grid;
+  grid-template-columns: 287px repeat(5, 1fr);
+  align-items: stretch;
+  background: #101111;
+}
+
+.plans-comparison-head > h2 {
+  margin: 0;
+  padding: 34px 20px 0;
+  background: var(--plans-bg);
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.plans-comparison-head > div {
+  position: relative;
+  min-height: 86px;
+  padding: 17px 12px 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.plans-comparison-head > div.is-best { border-top-color: #9c90f8; }
+
+.plans-comparison-head > div > small {
+  position: absolute;
+  top: -22px;
+  left: 0;
+  width: 100%;
+  height: 22px;
+  border-radius: 10px 10px 0 0;
+  background: #a49af4;
+  color: #080808;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.plans-comparison-head strong {
+  font-size: 12px;
+}
+
+.plans-comparison-head button {
+  width: 100%;
+  height: 25px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--plans-violet);
+  font-size: 9px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.plans-comparison-head > div:last-child button {
+  background: #2c2d2d;
+  color: #c9cacb;
+}
+
+.plans-table {
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 10px;
+}
+
+.plans-table-section h3 {
+  height: 69px;
+  margin: 0;
+  padding: 0 26px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.plans-table-section:not(:first-child) h3 {
+  border-top: 1px solid rgba(255,255,255,.10);
+}
+
+.plans-table-row {
+  min-height: 57px;
+  display: grid;
+  grid-template-columns: 287px repeat(5, 1fr);
+}
+
+.plans-table-row > strong {
+  padding: 0 18px;
+  background: #131414;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 9.5px;
+  text-align: left;
+}
+
+.plans-table-row > strong svg {
+  flex: 0 0 auto;
+  color: #afb1b3;
+}
+
+.plans-table-row > div {
+  min-width: 0;
+  padding: 9px 10px;
+  border-left: 1px solid rgba(255,255,255,.08);
+  background: #090a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 9.5px;
+  line-height: 1.35;
+}
+
+.plans-table-row > div:nth-child(odd) { background: #111212; }
+.plans-check { color: #765ff2; }
+.plans-x { color: #77797b; }
+
+.plans-note {
+  width: 1127px;
+  margin: 64px auto 0;
+  padding: 16px;
+  border-radius: 9px;
+  background: #272828;
+  font-size: 9px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.plans-faq {
+  width: 1120px;
+  margin: 68px auto 0;
+  padding-bottom: 70px;
+}
+
+.plans-faq > h2 {
+  margin: 0 0 38px;
+  text-align: center;
+  font-size: 42px;
+  line-height: 1;
+  letter-spacing: -.04em;
+  font-weight: 1000;
+}
+
+.plans-faq article {
+  border-bottom: 1px solid rgba(255,255,255,.17);
+}
+
+.plans-faq article > button {
+  width: 100%;
+  min-height: 51px;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plans-faq article > button strong {
+  font-size: 12px;
+}
+
+.plans-faq article > button svg {
+  color: #c2c4c5;
+  transition: transform .18s ease;
+}
+
+.plans-faq article.is-open > button svg { transform: rotate(180deg); }
+
+.plans-faq article > p {
+  margin: -4px 0 16px;
+  max-width: 900px;
+  color: #9d9fa1;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.plans-chat {
+  position: fixed;
+  z-index: 70;
+  right: 18px;
+  bottom: 14px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #6955f1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.plans-modal-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  background: rgba(0,0,0,.72);
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(8px);
+}
+
+.plans-modal {
+  position: relative;
+  width: min(390px, calc(100vw - 32px));
+  padding: 30px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 18px;
+  background: #171818;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+
+.plans-modal > span {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: #292345;
+  color: #806bf8;
+  display: grid;
+  place-items: center;
+}
+
+.plans-modal h2 { margin: 16px 0 8px; }
+.plans-modal p { margin: 0; color: #aaa; font-size: 11px; line-height: 1.55; }
+
+.plans-modal > button:last-child {
+  width: 100%;
+  height: 38px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--plans-violet);
+  font-size: 10px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.plans-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #242525;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+@media (max-width: 1220px) {
+  .plans-grid,
+  .plans-comparison,
+  .plans-note,
+  .plans-faq {
+    width: calc(100vw - 36px);
+  }
+
+  .plans-grid {
+    overflow-x: auto;
+    grid-template-columns: repeat(5, 218px);
+    justify-content: start;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+  }
+
+  .plans-comparison { overflow-x: auto; }
+  .plans-comparison-head,
+  .plans-table { min-width: 1145px; }
+}
+
+@media (max-width: 640px) {
+  .plans-back { top: 12px; left: 10px; }
+  .plans-hero { padding: 70px 14px 0; }
+  .plans-hero > h1 { font-size: 34px; }
+  .plans-hero > p { flex-wrap: wrap; }
+  .plans-grid { width: calc(100vw - 20px); }
+  .plans-comparison,
+  .plans-note,
+  .plans-faq { width: calc(100vw - 24px); }
+  .plans-comparison-head > h2 { font-size: 14px; }
+  .plans-note { margin-top: 40px; }
+  .plans-faq > h2 { font-size: 32px; }
+}
