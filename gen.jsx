@@ -33,6 +33,7 @@ import galleryArtwork from './assets/gallery-sheet.png';
 import GeneratorStudio from './GeneratorStudio.jsx';
 import AudioStudio from './AudioStudio.jsx';
 import BlueprintsView from './BlueprintsView.jsx';
+import LibraryView from './LibraryView.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -149,7 +150,9 @@ export default function App() {
 
   const handleNavigation = (label) => {
     setActiveNav(label);
-    if (label === 'Image' || label === 'Video' || label === '3D') {
+    if (label === 'Library') {
+      setView('library');
+    } else if (label === 'Image' || label === 'Video' || label === '3D') {
       setStudioTab(label.toLowerCase());
       setView('studio');
     } else if (label === 'Audio') {
@@ -160,6 +163,20 @@ export default function App() {
       setView('home');
     }
   };
+
+  if (view === 'library') {
+    return (
+      <LibraryView
+        onNavigate={handleNavigation}
+        onRemix={(remixPrompt) => {
+          setStudioPrompt(remixPrompt);
+          setStudioTab('image');
+          setActiveNav('Image');
+          setView('studio');
+        }}
+      />
+    );
+  }
 
   if (view === 'studio') {
     return <GeneratorStudio initialPrompt={studioPrompt} initialTab={studioTab} onBack={() => setView('home')} onNavigate={(v) => setView(v)} />;
