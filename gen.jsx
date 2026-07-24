@@ -39,6 +39,7 @@ import UpscalerView from './UpscalerView.jsx';
 import PlansView from './PlansView.jsx';
 import ApiView from './ApiView.jsx';
 import WhatsNewView from './WhatsNewView.jsx';
+import MorePanel from './MorePanel.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -103,7 +104,7 @@ function Artwork({ tile, className = '', children, ...props }) {
   );
 }
 
-function Sidebar({ active, onSelect, mobileOpen, onClose }) {
+function Sidebar({ active, onSelect, mobileOpen, onClose, moreOpen, onToggleMore }) {
   return (
     <aside className={`sidebar ${mobileOpen ? 'sidebar--open' : ''}`}>
       <button className="mobile-close" onClick={onClose} aria-label="Close navigation">
@@ -129,7 +130,14 @@ function Sidebar({ active, onSelect, mobileOpen, onClose }) {
       </nav>
 
       <div className="sidebar-bottom">
-        <button className="nav-item"><MoreHorizontal size={21} strokeWidth={1.75} /><span>More</span></button>
+        <button
+          className={`nav-item ${moreOpen ? 'nav-item--active' : ''}`}
+          onClick={onToggleMore}
+          aria-expanded={moreOpen}
+        >
+          <MoreHorizontal size={21} strokeWidth={1.75} />
+          <span>More</span>
+        </button>
         <button className="sign-button sign-button--ghost"><LogIn size={16} /> <span>Sign Up</span></button>
         <button className="sign-button"><User size={16} /> <span>Sign In</span></button>
       </div>
@@ -145,6 +153,7 @@ export default function App() {
   const [view, setView] = useState('home');
   const [studioPrompt, setStudioPrompt] = useState('');
   const [studioTab, setStudioTab] = useState('image');
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const handleGenerate = () => {
     if (!prompt.trim()) return;
@@ -154,6 +163,7 @@ export default function App() {
   };
 
   const handleNavigation = (label) => {
+    setMoreOpen(false);
     setActiveNav(label);
     if (label === 'Library') {
       setView('library');
@@ -271,6 +281,13 @@ export default function App() {
         onSelect={handleNavigation}
         mobileOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
+        moreOpen={moreOpen}
+        onToggleMore={() => setMoreOpen((open) => !open)}
+      />
+      <MorePanel
+        open={moreOpen}
+        onClose={() => setMoreOpen(false)}
+        onNavigate={handleNavigation}
       />
       {menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Close menu" />}
 

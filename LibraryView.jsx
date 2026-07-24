@@ -30,6 +30,7 @@ import {
   Workflow,
 } from 'lucide-react';
 import './LibraryView.css';
+import MorePanel from './MorePanel.jsx';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: Home },
@@ -81,7 +82,7 @@ const GENERATIONS = [
   },
 ];
 
-function LibrarySidebar({ onNavigate }) {
+function LibrarySidebar({ onNavigate, moreOpen, onToggleMore }) {
   return (
     <aside className="library-sidebar">
       <button
@@ -109,7 +110,12 @@ function LibrarySidebar({ onNavigate }) {
       </nav>
 
       <div className="library-sidebar-bottom">
-        <button type="button" className="library-nav-item">
+        <button
+          type="button"
+          className={`library-nav-item ${moreOpen ? 'is-active' : ''}`}
+          onClick={onToggleMore}
+          aria-expanded={moreOpen}
+        >
           <MoreHorizontal size={17} />
           <span>More</span>
         </button>
@@ -220,6 +226,7 @@ export default function LibraryView({ onNavigate, onRemix }) {
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState([]);
   const [zoom, setZoom] = useState(100);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const visibleGenerations = useMemo(() => {
     const cleanQuery = submittedQuery.trim().toLowerCase();
@@ -245,7 +252,20 @@ export default function LibraryView({ onNavigate, onRemix }) {
 
   return (
     <div className="library-view">
-      <LibrarySidebar onNavigate={onNavigate} />
+      <LibrarySidebar
+        onNavigate={onNavigate}
+        moreOpen={moreOpen}
+        onToggleMore={() => setMoreOpen((open) => !open)}
+      />
+      <MorePanel
+        open={moreOpen}
+        compact
+        onClose={() => setMoreOpen(false)}
+        onNavigate={(destination) => {
+          setMoreOpen(false);
+          onNavigate(destination);
+        }}
+      />
 
       <main
         className="library-main"

@@ -22,6 +22,7 @@ import {
   Workflow,
 } from 'lucide-react';
 import './WhatsNewView.css';
+import MorePanel from './MorePanel.jsx';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: Home },
@@ -87,7 +88,7 @@ const RELEASES = [
   },
 ];
 
-function WhatsNewSidebar({ onNavigate, onOpenChat }) {
+function WhatsNewSidebar({ onNavigate, moreOpen, onToggleMore }) {
   return (
     <aside className="whats-new-sidebar">
       <button type="button" className="whats-new-brand" aria-label="Lumina home" onClick={() => onNavigate('Home')}>
@@ -110,7 +111,12 @@ function WhatsNewSidebar({ onNavigate, onOpenChat }) {
       </nav>
 
       <div className="whats-new-sidebar-bottom">
-        <button type="button" className="whats-new-nav-item" onClick={onOpenChat}>
+        <button
+          type="button"
+          className={`whats-new-nav-item ${moreOpen ? 'is-active' : ''}`}
+          onClick={onToggleMore}
+          aria-expanded={moreOpen}
+        >
           <MoreHorizontal size={17} />
           <span>More</span>
         </button>
@@ -175,6 +181,7 @@ export default function WhatsNewView({ onNavigate }) {
   const [likedVersions, setLikedVersions] = useState([]);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatSent, setChatSent] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const release = RELEASES[releaseIndex];
   const liked = likedVersions.includes(release.version);
@@ -189,7 +196,20 @@ export default function WhatsNewView({ onNavigate }) {
 
   return (
     <div className="whats-new-view">
-      <WhatsNewSidebar onNavigate={onNavigate} onOpenChat={() => setChatOpen(true)} />
+      <WhatsNewSidebar
+        onNavigate={onNavigate}
+        moreOpen={moreOpen}
+        onToggleMore={() => setMoreOpen((open) => !open)}
+      />
+      <MorePanel
+        open={moreOpen}
+        compact
+        onClose={() => setMoreOpen(false)}
+        onNavigate={(destination) => {
+          setMoreOpen(false);
+          onNavigate(destination);
+        }}
+      />
 
       <main className="whats-new-main">
         <header className="whats-new-header">
