@@ -31,6 +31,7 @@ import {
 import heroArtwork from './assets/hero-cinematic.png';
 import galleryArtwork from './assets/gallery-sheet.png';
 import GeneratorStudio from './GeneratorStudio.jsx';
+import AudioStudio from './AudioStudio.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -103,7 +104,7 @@ function Sidebar({ active, onSelect, mobileOpen, onClose }) {
       </button>
 
       <button className="brand" aria-label="Lumina home" onClick={() => onSelect('Home')}>
-        <span className="brand-mark"><Sparkles size={23} strokeWidth={1.6} /></span>
+        <span className="brand-mark"><Sparkles size={25} strokeWidth={1.7} /></span>
       </button>
 
       <nav className="nav-list" aria-label="Main navigation">
@@ -114,16 +115,16 @@ function Sidebar({ active, onSelect, mobileOpen, onClose }) {
             onClick={() => { onSelect(label); onClose(); }}
           >
             {badge && <span className="nav-badge">{badge}</span>}
-            <Icon size={18} strokeWidth={1.7} />
+            <Icon size={21} strokeWidth={1.75} />
             <span>{label}</span>
           </button>
         ))}
       </nav>
 
       <div className="sidebar-bottom">
-        <button className="nav-item"><MoreHorizontal size={19} /><span>More</span></button>
-        <button className="sign-button sign-button--ghost"><LogIn size={14} /> Sign Up</button>
-        <button className="sign-button"><User size={14} /> Sign In</button>
+        <button className="nav-item"><MoreHorizontal size={21} strokeWidth={1.75} /><span>More</span></button>
+        <button className="sign-button sign-button--ghost"><LogIn size={16} /> <span>Sign Up</span></button>
+        <button className="sign-button"><User size={16} /> <span>Sign In</span></button>
       </div>
     </aside>
   );
@@ -146,10 +147,23 @@ export default function App() {
   const handleNavigation = (label) => {
     setActiveNav(label);
     if (label === 'Image') setView('studio');
+    if (label === 'Audio') setView('audio');
   };
 
   if (view === 'studio') {
     return <GeneratorStudio initialPrompt={studioPrompt} onBack={() => setView('home')} />;
+  }
+
+  if (view === 'audio') {
+    return (
+      <AudioStudio
+        onBack={() => setView('home')}
+        onOpenImage={() => {
+          setActiveNav('Image');
+          setView('studio');
+        }}
+      />
+    );
   }
 
   return (
@@ -201,6 +215,10 @@ export default function App() {
                   onClick={() => {
                     setCreationType(label);
                     if (label === 'Image') setView('studio');
+                    if (label === 'Audio') {
+                      setActiveNav('Audio');
+                      setView('audio');
+                    }
                   }}
                 >
                   <span className="creation-icon">
@@ -308,7 +326,7 @@ const styles = `
     position: fixed;
     inset: 8px auto 8px 8px;
     z-index: 50;
-    width: 70px;
+    width: 78px;
     border: 1px solid rgba(255,255,255,.16);
     border-radius: 22px;
     background: rgba(13,13,13,.94);
@@ -320,8 +338,8 @@ const styles = `
   }
 
   .brand {
-    width: 68px;
-    height: 58px;
+    width: 76px;
+    height: 62px;
     border: 0;
     border-radius: 22px 22px 12px 12px;
     background: transparent;
@@ -331,8 +349,8 @@ const styles = `
   }
 
   .brand-mark {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: grid;
     place-items: center;
     border: 1px solid rgba(255,255,255,.24);
@@ -355,9 +373,9 @@ const styles = `
 
   .nav-item {
     position: relative;
-    width: 56px;
-    min-height: 47px;
-    padding: 7px 2px 5px;
+    width: 64px;
+    min-height: 51px;
+    padding: 7px 3px 6px;
     border: 0;
     border-radius: 13px;
     background: transparent;
@@ -366,11 +384,11 @@ const styles = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 4px;
     cursor: pointer;
     transition: .2s ease;
   }
-  .nav-item span { font-size: 9px; font-weight: 650; line-height: 1; white-space: nowrap; }
+  .nav-item span { font-size: 9.5px; font-weight: 650; line-height: 1.05; white-space: nowrap; }
   .nav-item:hover { color: #fff; background: rgba(255,255,255,.07); }
   .nav-item--active {
     color: #fff;
@@ -381,8 +399,8 @@ const styles = `
     content: '';
     position: absolute;
     left: -7px;
-    width: 2px;
-    height: 20px;
+    width: 3px;
+    height: 23px;
     border-radius: 4px;
     background: #8d76ff;
     box-shadow: 0 0 12px #7c5cff;
@@ -390,8 +408,8 @@ const styles = `
 
   .nav-item .nav-badge {
     position: absolute;
-    top: 1px;
-    right: 0;
+    top: 2px;
+    right: 1px;
     background: #f4f4f4;
     color: #111;
     padding: 2px 4px;
@@ -402,31 +420,37 @@ const styles = `
   .sidebar-bottom {
     width: 100%;
     margin-top: auto;
-    padding: 5px 7px 9px;
+    padding: 7px 7px 10px;
     display: grid;
     gap: 5px;
     justify-items: center;
     border-top: 1px solid rgba(255,255,255,.07);
   }
-  .sidebar-bottom .nav-item { min-height: 42px; }
+  .sidebar-bottom .nav-item { min-height: 44px; }
 
   .sign-button {
-    width: 55px;
-    padding: 6px 2px;
+    width: 64px;
+    min-height: 32px;
+    padding: 0 7px;
     border: 0;
     border-radius: 9px;
     background: var(--violet);
-    font-size: 8px;
-    font-weight: 700;
+    font-size: 9.5px;
+    font-weight: 750;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 3px;
+    gap: 5px;
+    white-space: nowrap;
+    transition: transform .18s ease, background-color .18s ease, box-shadow .18s ease;
   }
+  .sign-button:hover { transform: translateY(-1px); background: var(--violet-bright); box-shadow: 0 5px 14px rgba(117,87,246,.3); }
   .sign-button--ghost { background: #242424; color: #ddd; border: 1px solid rgba(255,255,255,.1); }
+  .sign-button--ghost:hover { background: #303030; box-shadow: none; }
+  .nav-item:focus-visible, .sign-button:focus-visible, .brand:focus-visible { outline: 2px solid var(--violet-bright); outline-offset: 2px; }
 
-  .page { min-height: 100vh; margin-left: 86px; }
+  .page { min-height: 100vh; margin-left: 94px; }
   .mobile-header { display: none; }
 
   .hero {
@@ -755,7 +779,11 @@ const styles = `
   @media (max-height: 850px) and (min-width: 821px) {
     .sidebar { overflow-y: auto; scrollbar-width: none; }
     .sidebar-bottom { position: relative; margin-top: 4px; }
-    .nav-item { min-height: 43px; }
+    .brand { height: 56px; }
+    .nav-list { gap: 1px; }
+    .nav-item { min-height: 46px; padding-block: 5px; }
+    .sidebar-bottom .nav-item { min-height: 40px; }
+    .sign-button { min-height: 30px; }
   }
 
   @media (max-width: 1180px) {
