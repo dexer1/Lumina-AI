@@ -155,6 +155,16 @@ export default function App() {
   const [studioPrompt, setStudioPrompt] = useState('');
   const [studioTab, setStudioTab] = useState('image');
   const [moreOpen, setMoreOpen] = useState(false);
+  const [blueprintsReturn, setBlueprintsReturn] = useState({ view: 'home', activeNav: 'Home' });
+
+  const openBlueprints = () => {
+    setBlueprintsReturn({
+      view: view === 'blueprints' ? 'home' : view,
+      activeNav: view === 'blueprints' ? 'Home' : activeNav,
+    });
+    setActiveNav('Blueprints');
+    setView('blueprints');
+  };
 
   const handleGenerate = () => {
     if (!prompt.trim()) return;
@@ -165,6 +175,10 @@ export default function App() {
 
   const handleNavigation = (label) => {
     setMoreOpen(false);
+    if (label === 'Blueprints') {
+      openBlueprints();
+      return;
+    }
     setActiveNav(label);
     if (label === 'Library') {
       setView('library');
@@ -183,8 +197,6 @@ export default function App() {
       setView('api');
     } else if (label === "What's New") {
       setView('whats-new');
-    } else if (label === 'Blueprints') {
-      setView('blueprints');
     } else {
       setView('home');
     }
@@ -254,11 +266,31 @@ export default function App() {
   }
 
   if (view === 'studio') {
-    return <GeneratorStudio initialPrompt={studioPrompt} initialTab={studioTab} onBack={() => setView('home')} onNavigate={(v) => setView(v)} />;
+    return (
+      <GeneratorStudio
+        initialPrompt={studioPrompt}
+        initialTab={studioTab}
+        onBack={() => setView('home')}
+        onNavigate={(nextView) => {
+          if (nextView === 'blueprints') {
+            openBlueprints();
+          } else {
+            setView(nextView);
+          }
+        }}
+      />
+    );
   }
   
   if (view === 'blueprints') {
-    return <BlueprintsView onBack={() => setView('home')} />;
+    return (
+      <BlueprintsView
+        onBack={() => {
+          setActiveNav(blueprintsReturn.activeNav);
+          setView(blueprintsReturn.view);
+        }}
+      />
+    );
   }
 
   if (view === 'audio') {
@@ -337,8 +369,7 @@ export default function App() {
                       setActiveNav('Audio');
                       setView('audio');
                     } else if (label === 'Blueprints') {
-                      setActiveNav('Blueprints');
-                      setView('blueprints');
+                      openBlueprints();
                     } else if (label === 'Upscaler') {
                       setActiveNav('Upscaler');
                       setView('upscaler');

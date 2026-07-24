@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, ExternalLink, ArrowRight } from 'lucide-react';
+import { Search, ExternalLink, ArrowLeft, ArrowRight } from 'lucide-react';
 import './BlueprintsView.css';
 
 const FILTERS = [
@@ -25,11 +25,17 @@ export default function BlueprintsView({ onBack }) {
   return (
     <div className="blueprints-view">
       <header className="blueprints-header">
-        <nav className="bp-nav-left">
-          <button className="bp-nav-item is-active">Explore</button>
-          <button className="bp-nav-item">Liked</button>
-          <button className="bp-nav-item">Your Generations</button>
-        </nav>
+        <div className="bp-header-left">
+          <button type="button" className="bp-back-btn" onClick={onBack} aria-label="Back to previous tab">
+            <ArrowLeft size={16} />
+            <span>Back</span>
+          </button>
+          <nav className="bp-nav-left">
+            <button className="bp-nav-item is-active">Explore</button>
+            <button className="bp-nav-item">Liked</button>
+            <button className="bp-nav-item">Your Generations</button>
+          </nav>
+        </div>
         <div className="bp-nav-right">
           <button className="bp-feedback-btn">
             Share Feedback <ExternalLink size={14} />

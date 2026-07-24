@@ -18,6 +18,40 @@
   z-index: 10;
 }
 
+.bp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.bp-back-btn {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 8px;
+  background: rgba(20, 20, 20, .62);
+  color: #d6d6d8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+}
+
+.bp-back-btn:hover {
+  border-color: rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .1);
+  color: #fff;
+}
+
+.bp-back-btn:focus-visible {
+  outline: 2px solid #725cf4;
+  outline-offset: 2px;
+}
+
 .bp-nav-left {
   display: flex;
   gap: 24px;
@@ -282,4 +316,19 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .blueprints-header {
+    height: auto;
+    min-height: 60px;
+    padding: 10px 14px;
+  }
+
+  .bp-header-left { gap: 12px; }
+  .bp-back-btn span { display: none; }
+  .bp-back-btn { width: 32px; padding: 0; justify-content: center; }
+  .bp-nav-left { gap: 12px; }
+  .bp-nav-item { font-size: 10px; }
+  .bp-feedback-btn { display: none; }
 }
