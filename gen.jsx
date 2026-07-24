@@ -37,6 +37,7 @@ import LibraryView from './LibraryView.jsx';
 import FlowStateView from './FlowStateView.jsx';
 import UpscalerView from './UpscalerView.jsx';
 import PlansView from './PlansView.jsx';
+import ApiView from './ApiView.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -166,6 +167,8 @@ export default function App() {
       setView('upscaler');
     } else if (label === 'Plans') {
       setView('plans');
+    } else if (label === 'API') {
+      setView('api');
     } else if (label === 'Blueprints') {
       setView('blueprints');
     } else {
@@ -213,6 +216,17 @@ export default function App() {
   if (view === 'plans') {
     return (
       <PlansView
+        onBack={() => {
+          setActiveNav('Home');
+          setView('home');
+        }}
+      />
+    );
+  }
+
+  if (view === 'api') {
+    return (
+      <ApiView
         onBack={() => {
           setActiveNav('Home');
           setView('home');
