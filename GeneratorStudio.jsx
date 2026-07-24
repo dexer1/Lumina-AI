@@ -714,7 +714,7 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
               <button className={activeTab === 'video' ? 'is-active' : ''} onClick={() => setActiveTab('video')}><Play size={14} /> Video</button>
               <button className={activeTab === '3d' ? 'is-active' : ''} onClick={() => setActiveTab('3d')}><Globe2 size={14} /> 3D</button>
               <button><Volume2 size={14} /> Audio <small>New</small></button>
-              <button><Workflow size={14} /> Flow State</button>
+              <button onClick={() => onNavigate?.('flow')}><Workflow size={14} /> Flow State</button>
               <button onClick={() => onNavigate?.('blueprints')}><GitBranch size={14} /> Blueprints</button>
               <button className="mobile-settings" onClick={() => setSettingsOpen(true)}><Settings2 size={14} /> Settings</button>
             </div>

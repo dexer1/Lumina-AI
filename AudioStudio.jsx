@@ -64,7 +64,7 @@ function Waveform({ seed }) {
   );
 }
 
-export default function AudioStudio({ onBack, onOpenImage }) {
+export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
   const [prompt, setPrompt] = useState('');
   const [duration, setDuration] = useState(60);
   const [generationCount, setGenerationCount] = useState(1);
@@ -240,7 +240,10 @@ export default function AudioStudio({ onBack, onOpenImage }) {
                 type="button"
                 key={label}
                 className={label === 'Audio' ? 'is-active' : ''}
-                onClick={label === 'Image' ? onOpenImage : undefined}
+                onClick={() => {
+                  if (label === 'Image') onOpenImage?.();
+                  else if (label !== 'Audio') onNavigate?.(label);
+                }}
               >
                 <Icon size={15} />
                 <span>{label}</span>

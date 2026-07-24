@@ -34,6 +34,7 @@ import GeneratorStudio from './GeneratorStudio.jsx';
 import AudioStudio from './AudioStudio.jsx';
 import BlueprintsView from './BlueprintsView.jsx';
 import LibraryView from './LibraryView.jsx';
+import FlowStateView from './FlowStateView.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -157,6 +158,8 @@ export default function App() {
       setView('studio');
     } else if (label === 'Audio') {
       setView('audio');
+    } else if (label === 'Flow State') {
+      setView('flow');
     } else if (label === 'Blueprints') {
       setView('blueprints');
     } else {
@@ -178,6 +181,18 @@ export default function App() {
     );
   }
 
+  if (view === 'flow') {
+    return (
+      <FlowStateView
+        onBack={() => {
+          setActiveNav('Home');
+          setView('home');
+        }}
+        onNavigate={handleNavigation}
+      />
+    );
+  }
+
   if (view === 'studio') {
     return <GeneratorStudio initialPrompt={studioPrompt} initialTab={studioTab} onBack={() => setView('home')} onNavigate={(v) => setView(v)} />;
   }
@@ -190,6 +205,7 @@ export default function App() {
     return (
       <AudioStudio
         onBack={() => setView('home')}
+        onNavigate={handleNavigation}
         onOpenImage={() => {
           setActiveNav('Image');
           setView('studio');
