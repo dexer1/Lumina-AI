@@ -38,6 +38,7 @@ import FlowStateView from './FlowStateView.jsx';
 import UpscalerView from './UpscalerView.jsx';
 import PlansView from './PlansView.jsx';
 import ApiView from './ApiView.jsx';
+import WhatsNewView from './WhatsNewView.jsx';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -169,6 +170,8 @@ export default function App() {
       setView('plans');
     } else if (label === 'API') {
       setView('api');
+    } else if (label === "What's New") {
+      setView('whats-new');
     } else if (label === 'Blueprints') {
       setView('blueprints');
     } else {
@@ -233,6 +236,10 @@ export default function App() {
         }}
       />
     );
+  }
+
+  if (view === 'whats-new') {
+    return <WhatsNewView onNavigate={handleNavigation} />;
   }
 
   if (view === 'studio') {
