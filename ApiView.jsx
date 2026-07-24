@@ -10,7 +10,6 @@ import {
   FileText,
   KeyRound,
   MessageCircle,
-  MessageSquare,
   Send,
   X,
 } from 'lucide-react';
@@ -185,10 +184,6 @@ export default function ApiView({ onBack }) {
           </section>
         )}
       </main>
-
-      <button type="button" className="api-chat" onClick={() => setDialog('contact')} aria-label="Open help chat">
-        <MessageSquare size={20} />
-      </button>
 
       {dialog === 'access' && (
         <Dialog title="Get API access" onClose={() => setDialog('')}>

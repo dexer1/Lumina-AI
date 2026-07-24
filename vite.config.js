@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import { AiChatError, createAiChatReply, getAiChatStatus } from './server/ai-chat.mjs';
 
 const allowedModels = new Set([
   'gemini-3.1-flash-image',
@@ -10,8 +11,17 @@ const allowedModels = new Set([
 
 async function readJson(request) {
   let body = '';
-  for await (const chunk of request) body += chunk;
+  for await (const chunk of request) {
+    body += chunk;
+    if (body.length > 100_000) throw new AiChatError('Запит завеликий.', 413);
+  }
   return JSON.parse(body || '{}');
+}
+
+function sendJson(response, status, body) {
+  response.statusCode = status;
+  response.setHeader('Content-Type', 'application/json; charset=utf-8');
+  response.end(JSON.stringify(body));
 }
 
 function geminiProxy(apiKey) {
@@ -74,9 +84,46 @@ function geminiProxy(apiKey) {
   };
 }
 
+function aiChatProxy(env) {
+  const middleware = async (request, response, next) => {
+    const path = request.url?.split('?')[0];
+
+    if (path === '/api/ai/status' && request.method === 'GET') {
+      sendJson(response, 200, getAiChatStatus(env));
+      return;
+    }
+
+    if (path !== '/api/ai/chat' || request.method !== 'POST') {
+      next();
+      return;
+    }
+
+    try {
+      const payload = await readJson(request);
+      sendJson(response, 200, await createAiChatReply(payload, env));
+    } catch (error) {
+      sendJson(
+        response,
+        error instanceof AiChatError ? error.status : 500,
+        { error: { message: error?.message || 'AI chat request failed.' } },
+      );
+    }
+  };
+
+  return {
+    name: 'local-ai-chat-proxy',
+    configureServer(server) {
+      server.middlewares.use(middleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware);
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    plugins: [react(), geminiProxy(env.GEMINI_API_KEY)],
+    plugins: [react(), geminiProxy(env.GEMINI_API_KEY), aiChatProxy(env)],
   };
 });

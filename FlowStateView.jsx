@@ -11,7 +11,6 @@ import {
   Image as ImageIcon,
   Lightbulb,
   Lock,
-  MessageSquare,
   Palette,
   Play,
   RefreshCcw,
@@ -293,9 +292,6 @@ export default function FlowStateView({ onBack, onNavigate }) {
         </div>
       )}
 
-      <button type="button" className="flow-chat" aria-label="Open help chat">
-        <MessageSquare size={19} />
-      </button>
     </div>
   );
 }

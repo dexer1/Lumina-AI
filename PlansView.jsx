@@ -9,7 +9,6 @@ import {
   ChevronDown,
   CircleHelp,
   Coins,
-  MessageSquare,
   Monitor,
   Smartphone,
   Sparkles,
@@ -339,10 +338,6 @@ export default function PlansView({ onBack }) {
           </div>
         </section>
       </main>
-
-      <button type="button" className="plans-chat" aria-label="Open help chat">
-        <MessageSquare size={19} />
-      </button>
 
       {chosenPlan && (
         <div className="plans-modal-backdrop" role="presentation" onMouseDown={() => setChosenPlan(null)}>

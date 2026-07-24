@@ -13,7 +13,6 @@ import {
   Image as ImageIcon,
   LayoutGrid,
   Library,
-  MessageSquare,
   Minus,
   MoreHorizontal,
   Play,
@@ -383,9 +382,6 @@ export default function LibraryView({ onNavigate, onRemix }) {
         </section>
       </main>
 
-      <button type="button" className="library-chat" aria-label="Open help chat">
-        <MessageSquare size={19} />
-      </button>
     </div>
   );
 }

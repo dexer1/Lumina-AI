@@ -3,6 +3,9 @@ dist/
 .vite/
 *.local
 *.log
+.env
+.env.*
+!.env.example
 
 # Local Netlify folder
 .netlify

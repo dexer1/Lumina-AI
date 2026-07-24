@@ -55,21 +55,21 @@ const SUPPORT_ITEMS = [
     title: 'Learn',
     description: 'Explore tutorials and walkthroughs',
     icon: GraduationCap,
-    message: 'Learning center is ready to explore.',
+    assistant: { view: 'help' },
   },
   {
     id: 'help',
     title: 'FAQ and Help',
     description: 'Find answers and get support',
     icon: LifeBuoy,
-    message: 'Help center opened.',
+    assistant: { view: 'help' },
   },
   {
     id: 'feedback',
     title: 'Feedback',
     description: 'Share ideas and report issues',
     icon: MessageSquare,
-    message: 'Feedback channel opened.',
+    assistant: { view: 'chat', prefill: 'I want to share feedback about Lumina AI: ' },
   },
 ];
 
@@ -95,6 +95,11 @@ export default function MorePanel({ open, onClose, onNavigate, compact = false }
     if (item.destination) {
       onClose();
       onNavigate(item.destination);
+      return;
+    }
+    if (item.assistant) {
+      onClose();
+      window.dispatchEvent(new CustomEvent('lumina:assistant:open', { detail: item.assistant }));
       return;
     }
     setMessage(item.message);

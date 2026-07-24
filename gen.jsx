@@ -15,12 +15,10 @@ import {
   LogIn,
   Maximize,
   Menu,
-  MessageSquare,
   MoreHorizontal,
   Play,
   Rocket,
   ScanLine,
-  Search,
   Sparkles,
   User,
   Video,
@@ -446,8 +444,6 @@ export default function App() {
         </div>
       </main>
 
-      <button className="chat-button" aria-label="Open help chat"><MessageSquare size={20} /></button>
-      <button className="quick-search" aria-label="Search"><Search size={17} /></button>
     </div>
   );
 }
@@ -911,23 +907,6 @@ const styles = `
     font-size: 10px;
   }
   footer span { color: #aaa; font-weight: 850; letter-spacing: .13em; display: flex; gap: 6px; align-items: center; }
-
-  .chat-button, .quick-search {
-    position: fixed;
-    right: 18px;
-    bottom: 18px;
-    z-index: 40;
-    width: 47px;
-    height: 47px;
-    border: 0;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #8769ff, #6543ee);
-    box-shadow: 0 10px 30px rgba(86,56,230,.4);
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-  }
-  .quick-search { bottom: 75px; width: 36px; height: 36px; right: 23px; background: #1d1d1d; border: 1px solid var(--line); box-shadow: none; color: #a8a8a8; }
 
   .mobile-close, .scrim { display: none; }
 

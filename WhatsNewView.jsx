@@ -11,12 +11,10 @@ import {
   Home,
   Image as ImageIcon,
   Library,
-  MessageSquare,
   MoreHorizontal,
   Rocket,
   ScanLine,
   Settings,
-  Sparkles,
   Video,
   Wand2,
   Workflow,
@@ -180,8 +178,6 @@ export default function WhatsNewView({ onNavigate }) {
   const [releaseIndex, setReleaseIndex] = useState(0);
   const [releaseMenuOpen, setReleaseMenuOpen] = useState(false);
   const [likedVersions, setLikedVersions] = useState([]);
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatSent, setChatSent] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
 
   const release = RELEASES[releaseIndex];
@@ -277,37 +273,6 @@ export default function WhatsNewView({ onNavigate }) {
         </article>
       </main>
 
-      <button type="button" className="whats-new-chat-button" onClick={() => setChatOpen(true)} aria-label="Open help chat">
-        <MessageSquare size={20} />
-      </button>
-
-      {chatOpen && (
-        <aside className="whats-new-chat" aria-label="Help chat">
-          <header>
-            <div>
-              <strong>Lumina support</strong>
-              <span>Usually replies in a few minutes</span>
-            </div>
-            <button type="button" onClick={() => setChatOpen(false)} aria-label="Close help chat">×</button>
-          </header>
-          {chatSent ? (
-            <div className="whats-new-chat-success">
-              <span><Sparkles size={22} /></span>
-              <strong>Message received</strong>
-              <p>We’ll get back to you shortly.</p>
-            </div>
-          ) : (
-            <form onSubmit={(event) => {
-              event.preventDefault();
-              setChatSent(true);
-            }}>
-              <p>Hi! What would you like to know about this release?</p>
-              <textarea aria-label="Chat message" placeholder="Write a message..." required />
-              <button type="submit">Send message</button>
-            </form>
-          )}
-        </aside>
-      )}
     </div>
   );
 }
