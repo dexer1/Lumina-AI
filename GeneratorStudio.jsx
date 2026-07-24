@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertCircle,
   ArrowLeft,
+  Box,
   Check,
   CheckSquare,
   ChevronDown,
@@ -159,7 +160,8 @@ function extractGeneratedImage(result) {
   throw new Error('Модель не повернула зображення. Спробуйте ще раз або оберіть іншу модель.');
 }
 
-export default function GeneratorStudio({ initialPrompt = '', onBack }) {
+export default function GeneratorStudio({ initialPrompt = '', initialTab = 'image', onBack, onNavigate }) {
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [prompt, setPrompt] = useState(initialPrompt);
   const [apiReady, setApiReady] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(!import.meta.env.VITE_GEMINI_API_KEY);
@@ -180,6 +182,20 @@ export default function GeneratorStudio({ initialPrompt = '', onBack }) {
   const [brushSize, setBrushSize] = useState(24);
   const [editedImageUrl, setEditedImageUrl] = useState(null);
   const [historyStates, setHistoryStates] = useState([]);
+  
+  // Video tab specific states
+  const [videoModel, setVideoModel] = useState('Hailuo 2.3');
+  const [videoDuration, setVideoDuration] = useState('6s');
+  const [videoDimensions, setVideoDimensions] = useState('16:9');
+  const [videoQuality, setVideoQuality] = useState('Quality 1376x768');
+  const [videoPrivate, setVideoPrivate] = useState(false);
+
+  // 3D tab specific states
+  const [threeDModel, setThreeDModel] = useState('Rodin V2');
+  const [meshType, setMeshType] = useState('Triangle');
+  const [meshQuality, setMeshQuality] = useState('500k');
+  const [material, setMaterial] = useState('All');
+  const [threeDPrivate, setThreeDPrivate] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -492,91 +508,322 @@ export default function GeneratorStudio({ initialPrompt = '', onBack }) {
         <aside className={`studio-settings ${settingsOpen ? 'studio-settings--open' : ''}`}>
           <div className="mobile-panel-title"><strong>Generation settings</strong><button onClick={() => setSettingsOpen(false)}><X size={18} /></button></div>
 
-          <label className="select-card">
-            <span className="select-icon model-icon" />
-            <span><small>Model</small><strong>{selectedModel.name}</strong></span>
-            <select value={selectedModelId} onChange={(event) => setSelectedModelId(event.target.value)}>{MODELS.map((model) => <option key={model.id} value={model.id}>{model.name}</option>)}</select>
-            <ChevronDown size={14} />
-          </label>
+          {activeTab === 'image' ? (
+            <>
+              <label className="select-card">
+                <span className="select-icon model-icon" />
+                <span><small>Model</small><strong>{selectedModel.name}</strong></span>
+                <select value={selectedModelId} onChange={(event) => setSelectedModelId(event.target.value)}>{MODELS.map((model) => <option key={model.id} value={model.id}>{model.name}</option>)}</select>
+                <ChevronDown size={14} />
+              </label>
 
-          <label className="select-card">
-            <span className="select-icon style-icon"><Wand2 size={15} /></span>
-            <span><small>Style</small><strong>{selectedStyle.name}</strong></span>
-            <select value={selectedStyleId} onChange={(event) => setSelectedStyleId(event.target.value)}>{STYLES.map((style) => <option key={style.id} value={style.id}>{style.name}</option>)}</select>
-            <ChevronDown size={14} />
-          </label>
+              <label className="select-card">
+                <span className="select-icon style-icon"><Wand2 size={15} /></span>
+                <span><small>Style</small><strong>{selectedStyle.name}</strong></span>
+                <select value={selectedStyleId} onChange={(event) => setSelectedStyleId(event.target.value)}>{STYLES.map((style) => <option key={style.id} value={style.id}>{style.name}</option>)}</select>
+                <ChevronDown size={14} />
+              </label>
 
-          <div className="sidebar-section">
-            <div className="sidebar-label">Image Dimensions <HelpCircle size={12} /></div>
-            <div className="dimension-grid">{ASPECT_RATIOS.map((ratio) => {
-              const [width, height] = ratio.split(':').map(Number);
-              return <button key={ratio} className={aspectRatio === ratio ? 'is-active' : ''} onClick={() => setAspectRatio(ratio)}><i style={{ aspectRatio: `${width}/${height}` }} /><span>{ratio}</span></button>;
-            })}</div>
-            <div className="resolution-row">{selectedModel.sizes.map((size) => <button key={size} className={imageSize === size ? 'is-active' : ''} onClick={() => setImageSize(size)}>{size === '1K' ? '1024×1024' : size}</button>)}</div>
-          </div>
+              <div className="sidebar-section">
+                <div className="sidebar-label">Image Dimensions <HelpCircle size={12} /></div>
+                <div className="dimension-grid">{ASPECT_RATIOS.map((ratio) => {
+                  const [width, height] = ratio.split(':').map(Number);
+                  return <button key={ratio} className={aspectRatio === ratio ? 'is-active' : ''} onClick={() => setAspectRatio(ratio)}><i style={{ aspectRatio: `${width}/${height}` }} /><span>{ratio}</span></button>;
+                })}</div>
+                <div className="resolution-row">{selectedModel.sizes.map((size) => <button key={size} className={imageSize === size ? 'is-active' : ''} onClick={() => setImageSize(size)}>{size === '1K' ? '1024×1024' : size}</button>)}</div>
+              </div>
 
-          <div className="sidebar-section">
-            <div className="sidebar-label">Number of Generations <HelpCircle size={12} /></div>
-            <div className="generation-count">{[1, 2, 3, 4].map((count) => <button key={count} className={numGenerations === count ? 'is-active' : ''} onClick={() => setNumGenerations(count)}>{count}</button>)}</div>
-          </div>
+              <div className="sidebar-section">
+                <div className="sidebar-label">Number of Generations <HelpCircle size={12} /></div>
+                <div className="generation-count">{[1, 2, 3, 4].map((count) => <button key={count} className={numGenerations === count ? 'is-active' : ''} onClick={() => setNumGenerations(count)}>{count}</button>)}</div>
+              </div>
 
-          <div className="sidebar-section compact-options">
-            <button className={`sidebar-switch ${isIsolatedBackground ? 'is-active' : ''}`} onClick={() => setIsIsolatedBackground((value) => !value)}><span>Clean Background <HelpCircle size={12} /></span><i /></button>
-            <button className={`sidebar-switch ${isInfographicClear ? 'is-active' : ''}`} onClick={() => setIsInfographicClear((value) => !value)}><span>Clear Infographic <HelpCircle size={12} /></span><i /></button>
-          </div>
+              <div className="sidebar-section compact-options">
+                <button className={`sidebar-switch ${isIsolatedBackground ? 'is-active' : ''}`} onClick={() => setIsIsolatedBackground((value) => !value)}><span>Clean Background <HelpCircle size={12} /></span><i /></button>
+                <button className={`sidebar-switch ${isInfographicClear ? 'is-active' : ''}`} onClick={() => setIsInfographicClear((value) => !value)}><span>Clear Infographic <HelpCircle size={12} /></span><i /></button>
+              </div>
 
-          <button className="import-file" onClick={() => fileInputRef.current?.click()} disabled={isParsingFile}>{isParsingFile ? <LoaderCircle className="spin" size={15} /> : <Upload size={15} />} Import .txt / .docx</button>
-          <input ref={fileInputRef} hidden type="file" accept=".txt,.docx,text/plain" onChange={(event) => processFile(event.target.files?.[0])} />
+              <button className="import-file" onClick={() => fileInputRef.current?.click()} disabled={isParsingFile}>{isParsingFile ? <LoaderCircle className="spin" size={15} /> : <Upload size={15} />} Import .txt / .docx</button>
+              <input ref={fileInputRef} hidden type="file" accept=".txt,.docx,text/plain" onChange={(event) => processFile(event.target.files?.[0])} />
 
-          <button className="reset-settings" onClick={() => { setSelectedModelId(MODELS[0].id); setSelectedStyleId('none'); setAspectRatio('16:9'); setImageSize('1K'); setNumGenerations(1); setIsIsolatedBackground(false); setIsInfographicClear(false); }}><RotateCcw size={14} /> Reset to Defaults</button>
+              <button className="reset-settings" onClick={() => { setSelectedModelId(MODELS[0].id); setSelectedStyleId('none'); setAspectRatio('16:9'); setImageSize('1K'); setNumGenerations(1); setIsIsolatedBackground(false); setIsInfographicClear(false); }}><RotateCcw size={14} /> Reset to Defaults</button>
+            </>
+          ) : activeTab === 'video' ? (
+            <div className="video-settings">
+              <label className="select-card video-select-card">
+                <span className="select-icon video-model-icon"><Play size={12} fill="currentColor" /></span>
+                <span><small>Model</small><strong>{videoModel}</strong></span>
+                <select value={videoModel} onChange={(e) => setVideoModel(e.target.value)}><option value="Hailuo 2.3">Hailuo 2.3</option></select>
+                <ChevronDown size={14} />
+              </label>
+
+              <div className="sidebar-section video-styles-section">
+                <div className="sidebar-label">Styles <button className="clear-all">Clear all</button></div>
+                <div className="video-style-cards">
+                  <div className="video-style-card">
+                    <div className="vs-icon"><FileText size={16} /></div>
+                    <div><small>Vibe</small><strong>Randomize</strong></div>
+                  </div>
+                  <div className="video-style-card">
+                    <div className="vs-icon"><Zap size={16} /></div>
+                    <div><small>Lighting</small><strong>Randomize</strong></div>
+                  </div>
+                  <div className="video-style-card">
+                    <div className="vs-icon"><div className="circles-icon"></div></div>
+                    <div><small>Color</small><strong>Randomize</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="sidebar-section">
+                <div className="sidebar-label">Duration <HelpCircle size={12} /></div>
+                <div className="video-row-buttons duration-buttons">
+                  {['6s', '10s'].map(val => (
+                    <button key={val} className={videoDuration === val ? 'is-active' : ''} onClick={() => setVideoDuration(val)}>{val}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sidebar-section">
+                <div className="sidebar-label">Video Dimensions <HelpCircle size={12} /><button className="auto-btn"><Maximize size={10} /> Auto</button></div>
+                <div className="dimension-grid video-dims">
+                  {['1:1', '16:9', '9:16'].map(val => {
+                    const [w, h] = val.split(':');
+                    return (
+                      <button key={val} className={videoDimensions === val ? 'is-active' : ''} onClick={() => setVideoDimensions(val)}>
+                        <i style={{ aspectRatio: `${w}/${h}` }}></i>
+                        <span>{val}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="sidebar-section">
+                <div className="video-row-buttons quality-buttons">
+                  {['Quality 1376x768', 'High Quality 1920x1080'].map(val => {
+                    const lines = val.split(' ');
+                    return (
+                      <button key={val} className={videoQuality === val ? 'is-active' : ''} onClick={() => setVideoQuality(val)}>
+                        <span>{lines[0]}{lines.length > 2 ? ' ' + lines[1] : ''}</span>
+                        <small>{lines[lines.length - 1]}</small>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="sidebar-section compact-options">
+                <button className={`sidebar-switch video-switch ${videoPrivate ? 'is-active' : ''}`} onClick={() => setVideoPrivate(v => !v)}>
+                  <span>Private Mode <HelpCircle size={12} /></span><i></i>
+                </button>
+              </div>
+              
+              <div className="sidebar-section">
+                <button className="sidebar-switch collection-dropdown">
+                  <span>Add to Collection <HelpCircle size={12} /></span>
+                  <ChevronDown size={14} />
+                </button>
+              </div>
+
+              <button className="reset-settings" onClick={() => { setVideoModel('Hailuo 2.3'); setVideoDuration('6s'); setVideoDimensions('16:9'); setVideoQuality('Quality 1376x768'); setVideoPrivate(false); }}><RotateCcw size={14} /> Reset to Defaults</button>
+            </div>
+          ) : activeTab === '3d' ? (
+            <div className="three-d-settings">
+              <label className="select-card video-select-card">
+                <span className="select-icon three-d-model-icon"><Box size={14} /></span>
+                <span><small>Model</small><strong>{threeDModel}</strong></span>
+                <select value={threeDModel} onChange={(e) => setThreeDModel(e.target.value)}><option value="Rodin V2">Rodin V2</option></select>
+                <ChevronDown size={14} />
+              </label>
+
+              <div className="sidebar-section">
+                <div className="sidebar-label">Mesh Type <HelpCircle size={12} /></div>
+                <div className="video-row-buttons">
+                  {['Triangle', 'Quad'].map(val => (
+                    <button key={val} className={meshType === val ? 'is-active' : ''} onClick={() => setMeshType(val)}>{val}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sidebar-section">
+                <div className="sidebar-label">Mesh Quality <HelpCircle size={12} /></div>
+                <div className="dimension-grid">
+                  {['2k', '20k', '150k', '500k'].map(val => (
+                    <button key={val} className={meshQuality === val ? 'is-active' : ''} onClick={() => setMeshQuality(val)} style={{ height: '32px', display: 'grid', placeItems: 'center' }}>
+                      <span style={{ fontSize: '10px' }}>{val}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sidebar-section">
+                <div className="sidebar-label">Material <HelpCircle size={12} /></div>
+                <div className="video-row-buttons" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                  {['PBR', 'Shaded', 'All'].map(val => (
+                    <button key={val} className={material === val ? 'is-active' : ''} onClick={() => setMaterial(val)}>{val}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sidebar-section compact-options" style={{ marginTop: '24px' }}>
+                <button className={`sidebar-switch video-switch ${threeDPrivate ? 'is-active' : ''}`} onClick={() => setThreeDPrivate(v => !v)}>
+                  <span>Private Mode <HelpCircle size={12} /></span><i></i>
+                </button>
+              </div>
+
+              <div className="sidebar-section">
+                <button className="sidebar-switch collection-dropdown">
+                  <span>Advanced Settings <HelpCircle size={12} /></span>
+                  <ChevronDown size={14} />
+                </button>
+              </div>
+
+              <div className="sidebar-section" style={{ marginTop: '0' }}>
+                <button className="sidebar-switch collection-dropdown">
+                  <span>Add to Collection <HelpCircle size={12} /></span>
+                  <ChevronDown size={14} />
+                </button>
+              </div>
+
+              <button className="reset-settings" onClick={() => { setThreeDModel('Rodin V2'); setMeshType('Triangle'); setMeshQuality('500k'); setMaterial('All'); setThreeDPrivate(false); }}><RotateCcw size={14} /> Reset to Defaults</button>
+            </div>
+          ) : null}
         </aside>
 
         <main className="creation-main">
           <section className={`prompt-workspace ${isDragging ? 'is-dragging' : ''}`} onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }} onDragLeave={() => setIsDragging(false)} onDrop={handleDrop}>
-            <div className="prompt-bar">
-              <button className="prompt-attach" onClick={() => fileInputRef.current?.click()}><ImageIcon size={18} /></button>
-              <textarea rows="1" value={prompt} onChange={(event) => { setPrompt(event.target.value); setDisabledSlideIndices(new Set()); }} placeholder="Type a prompt..." />
-              <button className="prompt-magic"><Sparkles size={17} /></button>
-              <button className="prompt-generate" onClick={handleGenerate} disabled={!prompt.trim()}>{isGenerating ? <LoaderCircle className="spin" size={16} /> : <Sparkles size={15} />} Generate <span>{selectedSlideCount * numGenerations || ''}</span></button>
-            </div>
+            {activeTab === '3d' ? (
+              <div className="three-d-prompt-bar">
+                <button className="prompt-attach"><ImageIcon size={18} /></button>
+                <div className="three-d-tip">
+                  <HelpCircle size={14} /> Tip: All images should show the same character or object from different angles. <a href="#">Use This Blueprint</a> to create your reference views.
+                </div>
+                <button className="prompt-generate three-d-generate" disabled>Generate <span>400</span></button>
+              </div>
+            ) : (
+              <div className="prompt-bar">
+                <button className="prompt-attach" onClick={() => fileInputRef.current?.click()}><ImageIcon size={18} /></button>
+                <textarea rows="1" value={prompt} onChange={(event) => { setPrompt(event.target.value); setDisabledSlideIndices(new Set()); }} placeholder="Type a prompt..." />
+                <button className="prompt-magic"><Sparkles size={17} /></button>
+                <button className="prompt-generate" onClick={handleGenerate} disabled={!prompt.trim()}>{isGenerating ? <LoaderCircle className="spin" size={16} /> : <Sparkles size={15} />} Generate <span>{selectedSlideCount * numGenerations || ''}</span></button>
+              </div>
+            )}
             <div className="creation-tabs">
-              <button className="is-active"><ImageIcon size={15} /> Image</button>
-              <button><Play size={14} /> Video</button>
-              <button><Globe2 size={14} /> 3D</button>
+              <button className={activeTab === 'image' ? 'is-active' : ''} onClick={() => setActiveTab('image')}><ImageIcon size={15} /> Image</button>
+              <button className={activeTab === 'video' ? 'is-active' : ''} onClick={() => setActiveTab('video')}><Play size={14} /> Video</button>
+              <button className={activeTab === '3d' ? 'is-active' : ''} onClick={() => setActiveTab('3d')}><Globe2 size={14} /> 3D</button>
               <button><Volume2 size={14} /> Audio <small>New</small></button>
               <button><Workflow size={14} /> Flow State</button>
-              <button><GitBranch size={14} /> Blueprints</button>
+              <button onClick={() => onNavigate?.('blueprints')}><GitBranch size={14} /> Blueprints</button>
               <button className="mobile-settings" onClick={() => setSettingsOpen(true)}><Settings2 size={14} /> Settings</button>
             </div>
           </section>
 
           {globalError && <div className="global-error"><AlertCircle size={18} /><span>{globalError}</span><button onClick={() => setGlobalError('')}><X size={16} /></button></div>}
 
-          {parsedSlides.length > 0 && (
-            <section className="prompt-queue">
-              <div className="queue-top"><span>Prompt Queue · {selectedSlideCount}/{parsedSlides.length}</span><div><button onClick={() => setDisabledSlideIndices(new Set())}>Select all</button><button onClick={() => setDisabledSlideIndices(new Set(parsedSlides.map((_, index) => index)))}>Clear</button></div></div>
-              <div className="prompt-chips">{parsedSlides.map((slide, index) => { const enabled = !disabledSlideIndices.has(index); return <button key={`${index}-${slide.slice(0, 15)}`} className={enabled ? 'is-selected' : ''} onClick={() => toggleSlide(index)}>{enabled ? <CheckSquare size={15} /> : <Square size={15} />}<span><strong>#{index + 1}</strong>{slide}</span></button>; })}</div>
+          {activeTab === 'image' && (
+            <>
+              {parsedSlides.length > 0 && (
+                <section className="prompt-queue">
+                  <div className="queue-top"><span>Prompt Queue · {selectedSlideCount}/{parsedSlides.length}</span><div><button onClick={() => setDisabledSlideIndices(new Set())}>Select all</button><button onClick={() => setDisabledSlideIndices(new Set(parsedSlides.map((_, index) => index)))}>Clear</button></div></div>
+                  <div className="prompt-chips">{parsedSlides.map((slide, index) => { const enabled = !disabledSlideIndices.has(index); return <button key={`${index}-${slide.slice(0, 15)}`} className={enabled ? 'is-selected' : ''} onClick={() => toggleSlide(index)}>{enabled ? <CheckSquare size={15} /> : <Square size={15} />}<span><strong>#{index + 1}</strong>{slide}</span></button>; })}</div>
+                </section>
+              )}
+
+              {!imagesHistory.length ? (
+                <section className="inspiration-section">
+                  <h1>LOOKING FOR INSPIRATION?</h1>
+                  <div className="inspiration-grid">{INSPIRATIONS.map((item) => <article key={item.title} className="inspiration-card"><div style={{ backgroundImage: `url(${inspirationArtwork})`, backgroundPosition: item.position }} /><footer><p>{item.title}</p><button onClick={() => setPrompt(item.prompt)}>Use Prompt</button></footer></article>)}</div>
+                </section>
+              ) : (
+                <section className="results-section">
+                  <div className="results-heading"><h2>Your Creations <em>{imagesHistory.length}</em></h2><button className="clear-results" onClick={() => setImagesHistory([])}><Trash2 size={14} /> Clear</button></div>
+                  <div className="generated-grid">{imagesHistory.map((item) => (
+                    <article className="generated-card" key={item.id}>
+                      <div className="generated-preview">
+                        {item.status === 'loading' && <div className="loading-preview"><LoaderCircle className="spin" size={27} /><strong>Створюємо зображення</strong><span>{item.modelName}</span></div>}
+                        {item.status === 'error' && <div className="error-preview"><AlertCircle size={25} /><strong>Не вдалося згенерувати</strong><span>{item.error}</span><button onClick={() => retryGeneration(item)}><RefreshCw size={14} /> Повторити</button></div>}
+                        {item.status === 'success' && <><img src={item.url} alt={item.prompt} /><div className="image-actions"><button onClick={() => setSelectedImage(item)}><Maximize size={17} /></button><a href={item.url} download={`lumina-${item.slideNumber}.png`}><Download size={17} /></a></div></>}
+                      </div>
+                      <div className="generated-info"><div><span>#{item.slideNumber}</span><small>{item.date}</small></div><p>{item.prompt}</p><footer><span>{item.modelName}</span><span>{item.aspectRatio} · {item.imageSize}</span></footer></div>
+                    </article>
+                  ))}</div>
+                </section>
+              )}
+            </>
+          )}
+
+          {activeTab === 'video' && (
+            <section className="video-results-section">
+              <div className="video-results-date">Wednesday, 1 October 2025</div>
+              
+              <div className="video-prompt-block">
+                <div className="video-prompt-text">{prompt || 'fire bg'}</div>
+                <div className="video-prompt-actions">
+                  <div className="video-pa-left">
+                    <button className="vp-btn iterate-btn"><Sparkles size={14}/> Iterate</button>
+                    <button className="vp-btn dots-btn">...</button>
+                    <div className="vp-tags">
+                      <span className="vp-tag">Illustrative Albedo</span>
+                      <span className="vp-tag">1280×720</span>
+                      <span className="vp-tag">Graphic Design 2D</span>
+                      <span className="vp-tag">Fast</span>
+                    </div>
+                  </div>
+                  <div className="video-pa-right">
+                    <span className="how-was-it">How was this output?</span>
+                    <button className="vp-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg></button>
+                    <button className="vp-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg></button>
+                  </div>
+                </div>
+
+                <div className="video-generated-grid">
+                  {[1,2,3,4].map(idx => (
+                    <div key={idx} className="video-card-explicit">
+                      <AlertCircle size={20} />
+                      <span>This image might be explicit</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="video-results-date">Tuesday, 23 September 2025</div>
+              <div className="video-prompt-block">
+                <div className="video-prompt-text">dog play pc game tanks</div>
+                <div className="video-prompt-actions">
+                  {/* Mock content below cutoff in screenshot */}
+                </div>
+              </div>
+
             </section>
           )}
 
-          {!imagesHistory.length ? (
-            <section className="inspiration-section">
-              <h1>LOOKING FOR INSPIRATION?</h1>
-              <div className="inspiration-grid">{INSPIRATIONS.map((item) => <article key={item.title} className="inspiration-card"><div style={{ backgroundImage: `url(${inspirationArtwork})`, backgroundPosition: item.position }} /><footer><p>{item.title}</p><button onClick={() => setPrompt(item.prompt)}>Use Prompt</button></footer></article>)}</div>
-            </section>
-          ) : (
-            <section className="results-section">
-              <div className="results-heading"><h2>Your Creations <em>{imagesHistory.length}</em></h2><button className="clear-results" onClick={() => setImagesHistory([])}><Trash2 size={14} /> Clear</button></div>
-              <div className="generated-grid">{imagesHistory.map((item) => (
-                <article className="generated-card" key={item.id}>
-                  <div className="generated-preview">
-                    {item.status === 'loading' && <div className="loading-preview"><LoaderCircle className="spin" size={27} /><strong>Створюємо зображення</strong><span>{item.modelName}</span></div>}
-                    {item.status === 'error' && <div className="error-preview"><AlertCircle size={25} /><strong>Не вдалося згенерувати</strong><span>{item.error}</span><button onClick={() => retryGeneration(item)}><RefreshCw size={14} /> Повторити</button></div>}
-                    {item.status === 'success' && <><img src={item.url} alt={item.prompt} /><div className="image-actions"><button onClick={() => setSelectedImage(item)}><Maximize size={17} /></button><a href={item.url} download={`lumina-${item.slideNumber}.png`}><Download size={17} /></a></div></>}
+          {activeTab === '3d' && (
+            <section className="video-results-section three-d-results-section">
+              <div className="video-results-date">Wednesday, 1 October 2025</div>
+              <div className="three-d-results-layout">
+                <div className="three-d-generated-grid">
+                  {[1,2,3,4].map(idx => (
+                    <div key={idx} className="video-card-explicit">
+                      <AlertCircle size={20} />
+                      <span>This image might be explicit</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="three-d-results-info">
+                  <div className="video-prompt-text">fire bg</div>
+                  <div className="vp-tags three-d-tags">
+                    <span className="vp-tag">Illustrative Albedo</span>
+                    <span className="vp-tag">1280×720</span>
+                    <span className="vp-tag">Graphic Design 2D</span>
+                    <span className="vp-tag">Fast</span>
                   </div>
-                  <div className="generated-info"><div><span>#{item.slideNumber}</span><small>{item.date}</small></div><p>{item.prompt}</p><footer><span>{item.modelName}</span><span>{item.aspectRatio} · {item.imageSize}</span></footer></div>
-                </article>
-              ))}</div>
+                  <div className="three-d-actions-row">
+                    <button className="vp-btn dots-btn">...</button>
+                  </div>
+                </div>
+              </div>
             </section>
           )}
         </main>

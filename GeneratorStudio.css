@@ -1045,6 +1045,387 @@ body,
   cursor: crosshair;
 }
 
+/* Video Settings UI */
+.video-settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.video-select-card {
+  margin-top: 10px;
+}
+
+.video-model-icon {
+  background: #111;
+  color: #5375ff;
+}
+
+.auto-btn, .clear-all {
+  margin-left: auto;
+}
+
+.clear-all {
+  background: transparent;
+  border: none;
+  color: #777;
+  font-size: 8px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.clear-all:hover {
+  color: #aaa;
+}
+
+.video-style-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.video-style-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #161616;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.video-style-card:hover {
+  border-color: #333;
+}
+
+.vs-icon {
+  width: 28px;
+  height: 28px;
+  background: #1c1c1c;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  color: #999;
+}
+
+.circles-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #999;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.circles-icon::after, .circles-icon::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #999;
+  box-sizing: border-box;
+}
+
+.circles-icon::before { top: -5px; left: -5px; }
+.circles-icon::after { top: -5px; left: 3px; }
+
+.video-style-card > div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.video-style-card small {
+  color: #777;
+  font-size: 9px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.video-style-card strong {
+  color: #ccc;
+  font-size: 10px;
+}
+
+.video-row-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.video-row-buttons button {
+  flex: 1;
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 10px 0;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 600;
+}
+
+.video-row-buttons button:hover {
+  background: #1a1a1a;
+}
+
+.video-row-buttons button.is-active {
+  border-color: #5b45f1;
+  background: rgba(91, 69, 241, 0.1);
+  color: #fff;
+}
+
+.quality-buttons button {
+  padding: 8px 0;
+  font-size: 10px;
+}
+
+.quality-buttons button small {
+  font-size: 9px;
+  color: #666;
+  margin-top: 2px;
+  font-weight: normal;
+}
+
+.quality-buttons button.is-active small {
+  color: #999;
+}
+
+.video-dims {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.auto-btn {
+  background: #252525;
+  border: none;
+  border-radius: 6px;
+  color: #aaa;
+  font-size: 8px;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.auto-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+.collection-dropdown {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.video-switch {
+  margin-bottom: 0;
+}
+
+/* Video Results UI */
+.video-results-section {
+  width: min(1270px, 100%);
+  margin: 0 auto;
+}
+
+.video-results-date {
+  color: #999;
+  font-size: 11px;
+  margin-top: 30px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.video-prompt-block {
+  background: #121212;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.video-prompt-text {
+  color: #e0e0e0;
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.video-prompt-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.video-pa-left, .video-pa-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vp-btn {
+  background: #252525;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #aaa;
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.vp-btn:hover {
+  background: #333;
+  color: #ddd;
+}
+
+.iterate-btn {
+  background: #2a2a2a;
+  color: #eee;
+}
+
+.dots-btn {
+  padding: 7px 8px;
+  line-height: 1;
+}
+
+.vp-tags {
+  display: flex;
+  gap: 6px;
+  margin-left: 10px;
+}
+
+.vp-tag {
+  background: #202020;
+  border: 1px solid #333;
+  color: #888;
+  border-radius: 12px;
+  padding: 5px 10px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.how-was-it {
+  color: #666;
+  font-size: 11px;
+  margin-right: 8px;
+}
+
+.video-generated-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.video-card-explicit {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(180deg, #2a201c 0%, #1a1412 100%);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #a69888;
+  gap: 12px;
+  border: 1px solid #382c25;
+}
+
+.video-card-explicit span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* 3D Settings UI */
+.three-d-settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.three-d-model-icon {
+  background: #d8d8d8;
+  color: #111;
+}
+
+/* 3D Prompt Bar */
+.three-d-prompt-bar {
+  height: 48px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #232d4b;
+  border-radius: 14px;
+  background: #0f1322;
+}
+
+.three-d-tip {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6a8cd4;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 0 10px;
+}
+
+.three-d-tip a {
+  color: #8daeff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.three-d-generate {
+  background: #1c2136 !important;
+  color: #4a5982 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  font-weight: 700;
+}
+
+.three-d-generate span {
+  opacity: 1 !important;
+  color: #4a5982 !important;
+}
+
+/* 3D Results Layout */
+.three-d-results-layout {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.three-d-generated-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.three-d-results-info {
+  width: 290px;
+  background: #151515;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.three-d-tags {
+  margin-left: 0;
+  flex-wrap: wrap;
+}
+
+.three-d-actions-row {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
 @media (max-width: 1050px) {
   .creation-main {
     padding-right: 22px;
