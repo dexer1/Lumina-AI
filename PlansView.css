@@ -538,7 +538,19 @@
   .plans-hero { padding: 70px 14px 0; }
   .plans-hero > h1 { font-size: 34px; }
   .plans-hero > p { flex-wrap: wrap; }
-  .plans-grid { width: calc(100vw - 20px); }
+  .plans-grid {
+    width: calc(100% - 20px);
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(82vw, 320px);
+    gap: 12px;
+    padding: 0 5px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .plans-grid::-webkit-scrollbar { display: none; }
+  .plans-card { scroll-snap-align: center; }
   .plans-comparison,
   .plans-note,
   .plans-faq { width: calc(100vw - 24px); }

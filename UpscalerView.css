@@ -125,10 +125,12 @@
 
 .upscaler-history-item {
   opacity: .78;
+  border: 1px solid rgba(255, 255, 255, .035);
+  background: linear-gradient(145deg, #151616, #101111);
   cursor: default;
 }
 
-.upscaler-history-item:nth-of-type(n+6) { opacity: .38; }
+.upscaler-history-item:nth-of-type(n+6) { opacity: .52; }
 
 .upscaler-history-item.has-image {
   opacity: 1;

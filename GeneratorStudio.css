@@ -449,6 +449,8 @@ body,
 }
 
 .prompt-bar {
+  max-width: 100%;
+  overflow: hidden;
   height: 48px;
   padding: 5px;
   display: flex;
@@ -1531,6 +1533,7 @@ body,
 
   .creation-main {
     padding: 12px 13px 55px;
+    overflow-x: hidden;
   }
 
   .creation-tabs .mobile-settings {
@@ -1571,7 +1574,7 @@ body,
     display: none;
   }
 
-  .prompt-generate {
+  .prompt-bar .prompt-generate {
     min-width: 42px;
     width: 42px;
     padding: 0;

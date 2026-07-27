@@ -315,7 +315,11 @@ export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
 
           {generations.length === 0 ? (
             <div className="audio-empty-state">
-              You still have yet to make your first AI generation. Please input a prompt or reference above to create your first set.
+              <span className="audio-empty-icon"><Music2 size={22} /></span>
+              <span>
+                <strong>Create your first track</strong>
+                <small>Describe a mood, scene, or sound above to start generating audio.</small>
+              </span>
             </div>
           ) : (
             <section className="audio-results" aria-live="polite">

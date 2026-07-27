@@ -2,6 +2,16 @@
 
 ## 2026-07-26
 
+### Оптимізовано дизайн усіх вкладок
+
+- Проведено повторний візуальний аудит усіх основних workspace на desktop і mobile.
+- Усунуто перекриття мобільного меню, додано повернення сторінок до початку після навігації та прибрано зайві системні горизонтальні скролбари.
+- Зроблено адаптивними inspiration-картки Flow State, masonry-сітку Blueprints і мобільну карусель тарифів Plans.
+- Виправлено початковий стан мобільної панелі генератора та обрізання кнопки Generate.
+- Оновлено порожній стан Audio Studio, видимість історії Upscaler, позицію бейджа New і контраст іконок у More.
+- Перевірено відсутність горизонтального переповнення на Library, Image, Video, 3D, Audio, Flow State, Blueprints, Upscaler, Plans, API та What's New.
+- Виконано production-збірку й повторну браузерну перевірку ключових екранів.
+
 ### Completed site-wide button audit
 
 - Added a shared action center for sign-up, sign-in, notifications, settings, profile, previews and toast feedback.

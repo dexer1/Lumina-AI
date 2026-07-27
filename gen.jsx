@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ArrowUpRight,
   AudioLines,
@@ -119,7 +119,7 @@ function Sidebar({ active, onSelect, mobileOpen, onClose, moreOpen, onToggleMore
         {navItems.map(({ label, icon: Icon, badge }) => (
           <button
             key={label}
-            className={`nav-item ${active === label ? 'nav-item--active' : ''}`}
+            className={`nav-item ${badge ? 'nav-item--has-badge' : ''} ${active === label ? 'nav-item--active' : ''}`}
             onClick={() => { onSelect(label); onClose(); }}
           >
             {badge && <span className="nav-badge">{badge}</span>}
@@ -155,6 +155,10 @@ export default function App() {
   const [studioTab, setStudioTab] = useState('image');
   const [moreOpen, setMoreOpen] = useState(false);
   const [blueprintsReturn, setBlueprintsReturn] = useState({ view: 'home', activeNav: 'Home' });
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [view]);
 
   const openBlueprints = () => {
     setBlueprintsReturn({
@@ -591,8 +595,8 @@ const styles = `
 
   .nav-item .nav-badge {
     position: absolute;
-    top: 2px;
-    right: 1px;
+    top: 1px;
+    right: 5px;
     background: #f4f4f4;
     color: #111;
     padding: 2px 4px;
@@ -831,9 +835,9 @@ const styles = `
     gap: 5px;
     overflow-x: auto;
     padding-bottom: 5px;
-    scrollbar-width: thin;
-    scrollbar-color: #333 transparent;
+    scrollbar-width: none;
   }
+  .blueprint-row::-webkit-scrollbar { display: none; }
 
   .artwork {
     background-repeat: no-repeat;
@@ -965,7 +969,7 @@ const styles = `
       transition: transform .25s ease;
     }
     .sidebar--open { transform: translateX(0); }
-    .mobile-close { display: grid; position: absolute; top: 12px; right: -42px; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 11px; background: #151515; place-items: center; }
+    .sidebar--open .mobile-close { display: grid; position: absolute; top: 12px; right: -42px; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 11px; background: #151515; place-items: center; }
     .scrim { display: block; position: fixed; inset: 0; z-index: 45; border: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
     .page { margin-left: 0; }
     .mobile-header {
@@ -986,7 +990,14 @@ const styles = `
     .prompt-shell { height: auto; min-height: 58px; border-radius: 18px; }
     .generate-button { min-width: 48px; width: 48px; padding: 0; font-size: 0; }
     .generate-button svg { width: 17px; height: 17px; }
-    .creation-types { overflow-x: auto; justify-content: flex-start; padding: 0 8px 8px; gap: 17px; }
+    .creation-types {
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding: 0 8px 8px;
+      gap: 17px;
+      scrollbar-width: none;
+    }
+    .creation-types::-webkit-scrollbar { display: none; }
     .creation-type { min-width: 55px; }
     .content { padding: 7px 12px 30px; }
   }

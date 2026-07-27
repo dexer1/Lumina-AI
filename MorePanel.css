@@ -188,6 +188,7 @@
   padding: 0;
   border: 0;
   background: transparent;
+  color: #909193;
   display: grid;
   place-items: center;
   cursor: pointer;

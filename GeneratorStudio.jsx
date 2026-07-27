@@ -165,7 +165,9 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
   const [activeTab, setActiveTab] = useState(initialTab);
   const [prompt, setPrompt] = useState(initialPrompt);
   const [apiReady, setApiReady] = useState(null);
-  const [settingsOpen, setSettingsOpen] = useState(!import.meta.env.VITE_GEMINI_API_KEY);
+  const [settingsOpen, setSettingsOpen] = useState(
+    () => typeof window === 'undefined' || window.innerWidth > 800
+  );
   const [selectedModelId, setSelectedModelId] = useState(MODELS[0].id);
   const [selectedStyleId, setSelectedStyleId] = useState('none');
   const [aspectRatio, setAspectRatio] = useState('16:9');
@@ -535,7 +537,7 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
 
       <div className="creation-layout">
         <aside className={`studio-settings ${settingsOpen ? 'studio-settings--open' : ''}`}>
-          <div className="mobile-panel-title"><strong>Generation settings</strong><button onClick={() => setSettingsOpen(false)}><X size={18} /></button></div>
+          <div className="mobile-panel-title"><strong>Generation settings</strong><button onClick={() => setSettingsOpen(false)} aria-label="Close generation settings"><X size={18} /></button></div>
 
           {activeTab === 'image' ? (
             <>
