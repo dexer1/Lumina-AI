@@ -1,0 +1,187 @@
+.ui-action-backdrop {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(9px);
+  display: grid;
+  place-items: center;
+}
+
+.ui-action-dialog {
+  width: min(430px, 100%);
+  overflow: hidden;
+  color: #f7f7f8;
+  background: linear-gradient(165deg, #1b1b20, #101014);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 19px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.68);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  animation: ui-action-in 170ms ease-out;
+}
+
+@keyframes ui-action-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ui-action-dialog * { box-sizing: border-box; }
+.ui-action-dialog button, .ui-action-dialog input { font: inherit; }
+
+.ui-action-dialog > header {
+  min-height: 80px;
+  padding: 17px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  grid-template-columns: 42px 1fr 34px;
+  align-items: center;
+  gap: 12px;
+}
+
+.ui-action-dialog > header > span {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  color: #b5a8ff;
+  background: rgba(117, 87, 246, 0.18);
+  display: grid;
+  place-items: center;
+}
+
+.ui-action-dialog h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.ui-action-dialog header p {
+  margin: 4px 0 0;
+  color: #96969d;
+  font-size: 12px;
+}
+
+.ui-action-dialog header button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  color: #a8a8ae;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.ui-action-dialog header button:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+
+.ui-action-form,
+.ui-action-settings,
+.ui-action-profile,
+.ui-action-preview,
+.ui-action-notifications {
+  padding: 18px;
+}
+
+.ui-action-form { display: grid; gap: 13px; }
+.ui-action-form label { display: grid; gap: 6px; }
+.ui-action-form label span { color: #c7c7cb; font-size: 12px; font-weight: 700; }
+
+.ui-action-form input {
+  height: 43px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 10px;
+  outline: 0;
+  color: #fff;
+  background: #24242a;
+}
+
+.ui-action-form input:focus { border-color: #826cff; box-shadow: 0 0 0 2px rgba(117, 87, 246, 0.13); }
+
+.ui-action-form > button,
+.ui-action-preview > button,
+.ui-action-save {
+  min-height: 42px;
+  margin-top: 4px;
+  border: 0 !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+  background: linear-gradient(90deg, #7255ee, #8366ff) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ui-action-notifications { display: grid; gap: 2px; }
+.ui-action-notifications article { padding: 12px 3px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 10px; }
+.ui-action-notifications article > i { width: 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: #8064ff; }
+.ui-action-notifications article span { display: grid; gap: 5px; }
+.ui-action-notifications article strong { font-size: 13px; }
+.ui-action-notifications article small { color: #9999a1; font-size: 11px; }
+.ui-action-notifications > button { margin: 14px auto 0; padding: 8px 12px; border: 0; color: #b8acff; background: transparent; display: flex; gap: 7px; cursor: pointer; }
+
+.ui-action-settings { display: grid; gap: 8px; }
+.ui-action-settings > button:not(.ui-action-save) {
+  min-height: 57px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 11px;
+  color: #fff;
+  background: #202026;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ui-action-settings button span { display: grid; gap: 4px; }
+.ui-action-settings button strong { font-size: 12px; }
+.ui-action-settings button small { color: #93939b; font-size: 10px; }
+.ui-action-settings button > i { width: 30px; height: 17px; border-radius: 10px; background: #49494f; position: relative; }
+.ui-action-settings button > i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 11px; height: 11px; border-radius: 50%; background: #fff; transition: transform 150ms; }
+.ui-action-settings button.is-active > i { background: #7358ed; }
+.ui-action-settings button.is-active > i::after { transform: translateX(13px); }
+
+.ui-action-profile > div { padding: 8px 3px 18px; display: flex; align-items: center; gap: 12px; }
+.ui-action-profile > div b { width: 44px; height: 44px; border-radius: 50%; color: #07120c; background: #48d696; display: grid; place-items: center; font-size: 20px; }
+.ui-action-profile > div span { display: grid; gap: 4px; }
+.ui-action-profile > div small { color: #94949c; font-size: 11px; }
+.ui-action-profile > button { width: 100%; min-height: 43px; padding: 0 8px; border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); color: #e7e7e9; background: transparent; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+
+.ui-action-preview { text-align: center; }
+.ui-action-preview-art { height: 190px; margin-bottom: 16px; border-radius: 12px; background-size: cover; background-position: center; }
+.ui-action-preview p { margin: 0; color: #d7d7da; font-size: 13px; line-height: 1.6; }
+.ui-action-preview small { display: block; margin-top: 8px; color: #8f8f97; }
+.ui-action-preview > button { width: 100%; margin-top: 18px; }
+
+.ui-action-toast {
+  position: fixed;
+  z-index: 1300;
+  left: 50%;
+  bottom: 24px;
+  min-height: 42px;
+  max-width: min(430px, calc(100vw - 30px));
+  padding: 10px 15px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #f6f6f7;
+  background: #24242a;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 12px/1.4 Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.ui-action-toast.is-success { border-color: rgba(74, 213, 148, 0.35); color: #bff5d8; }
+
+@media (max-width: 520px) {
+  .ui-action-backdrop { padding: 10px; align-items: end; }
+  .ui-action-dialog { border-radius: 19px 19px 13px 13px; }
+}

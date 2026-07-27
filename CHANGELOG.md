@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-07-26
+
+### Completed site-wide button audit
+
+- Added a shared action center for sign-up, sign-in, notifications, settings, profile, previews and toast feedback.
+- Connected previously inactive Home, Library, Flow State, Upscaler, What's New and More-panel controls to working navigation or dialogs.
+- Made Blueprints search, filters, sections, feedback, previews and View More controls interactive.
+- Added Audio Studio playback, prompt focus, upgrade navigation and fixed the search button being covered by the AI assistant.
+- Connected Video and 3D Studio collection, advanced-settings, feedback, iterate, prompt-enhance and navigation controls.
+- Disabled empty Upscaler history slots so they no longer appear as working actions.
+- Fixed the What's New settings runtime error and verified all major pages without console errors.
+- Re-ran the static JSX button audit and the production build.
+
 У цьому файлі фіксуються всі зміни, виконані в проєкті. Нові записи додаються після кожного завершеного завдання.
 
 ## 2026-07-24

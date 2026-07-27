@@ -469,6 +469,18 @@
   gap: 13px;
 }
 
+.audio-result-card.is-playing .audio-waveform i {
+  animation: audio-wave-pulse 650ms ease-in-out infinite alternate;
+}
+
+.audio-result-card.is-playing .audio-waveform i:nth-child(3n) {
+  animation-delay: 180ms;
+}
+
+@keyframes audio-wave-pulse {
+  to { transform: scaleY(.45); opacity: .55; }
+}
+
 .audio-play {
   width: 38px;
   height: 38px;
@@ -491,7 +503,7 @@
 
 .audio-search {
   position: fixed;
-  right: 17px;
+  right: 82px;
   bottom: 17px;
   z-index: 30;
   width: 43px;

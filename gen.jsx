@@ -39,6 +39,7 @@ import ApiView from './ApiView.jsx';
 import WhatsNewView from './WhatsNewView.jsx';
 import MorePanel from './MorePanel.jsx';
 import LuminaLogo from './LuminaLogo.jsx';
+import { openUiAction, showUiToast } from './uiActions.js';
 
 const navItems = [
   { label: 'Home', icon: Home },
@@ -137,8 +138,8 @@ function Sidebar({ active, onSelect, mobileOpen, onClose, moreOpen, onToggleMore
           <MoreHorizontal size={21} strokeWidth={1.75} />
           <span>More</span>
         </button>
-        <button className="sign-button sign-button--ghost"><LogIn size={16} /> <span>Sign Up</span></button>
-        <button className="sign-button"><User size={16} /> <span>Sign In</span></button>
+        <button className="sign-button sign-button--ghost" onClick={() => openUiAction('signup')}><LogIn size={16} /> <span>Sign Up</span></button>
+        <button className="sign-button" onClick={() => openUiAction('signin')}><User size={16} /> <span>Sign In</span></button>
       </div>
     </aside>
   );
@@ -169,6 +170,21 @@ export default function App() {
     setStudioPrompt(prompt.trim());
     setStudioTab(creationType.toLowerCase() === 'video' ? 'video' : (creationType.toLowerCase() === '3d' ? '3d' : 'image'));
     setView('studio');
+  };
+
+  const enhancePrompt = () => {
+    const cleanPrompt = prompt.trim();
+    if (!cleanPrompt) {
+      setPrompt('A cinematic portrait in dramatic golden-hour light, richly detailed, natural textures, shallow depth of field');
+      showUiToast('Added an example prompt.', 'success');
+      return;
+    }
+    if (/cinematic lighting/i.test(cleanPrompt)) {
+      showUiToast('This prompt is already enhanced.');
+      return;
+    }
+    setPrompt(`${cleanPrompt}, cinematic lighting, balanced composition, rich detail, natural textures, high visual clarity`);
+    showUiToast('Prompt enhanced.', 'success');
   };
 
   const handleNavigation = (label) => {
@@ -233,6 +249,7 @@ export default function App() {
           setActiveNav('Home');
           setView('home');
         }}
+        onNavigate={handleNavigation}
       />
     );
   }
@@ -328,7 +345,7 @@ export default function App() {
             <Menu size={20} />
           </button>
           <div className="mobile-logo"><LuminaLogo size={17} /> LUMINA</div>
-          <button className="icon-button" aria-label="Notifications"><Bell size={19} /></button>
+          <button className="icon-button" aria-label="Notifications" onClick={() => openUiAction('notifications')}><Bell size={19} /></button>
         </header>
 
         <section className="hero" style={{ backgroundImage: `url(${heroArtwork})` }}>
@@ -345,7 +362,7 @@ export default function App() {
                 placeholder="Type a prompt..."
                 aria-label="Image prompt"
               />
-              <button className="surprise-button" aria-label="Enhance prompt"><Sparkles size={17} /></button>
+              <button className="surprise-button" aria-label="Enhance prompt" onClick={enhancePrompt}><Sparkles size={17} /></button>
               <button className="generate-button" disabled={!prompt.trim()} onClick={handleGenerate}>
                 Generate
                 <ArrowUpRight size={15} />
@@ -392,14 +409,14 @@ export default function App() {
                 <span className="section-kicker">CURATED WORKFLOWS</span>
                 <h2>Featured Blueprints</h2>
               </div>
-              <button className="view-all">View More <ChevronRight size={15} /></button>
+              <button className="view-all" onClick={openBlueprints}>View More <ChevronRight size={15} /></button>
             </div>
 
             <div className="blueprint-row">
               {blueprints.map((blueprint) => (
                 <Artwork key={blueprint.title} tile={blueprint.tile} className="blueprint-card" tabIndex={0}>
                   {blueprint.badge && <span className="card-badge">{blueprint.badge}</span>}
-                  <button className="card-action" aria-label={`Open ${blueprint.title}`}><ArrowUpRight size={16} /></button>
+                  <button className="card-action" aria-label={`Open ${blueprint.title}`} onClick={openBlueprints}><ArrowUpRight size={16} /></button>
                   <div className="card-gradient" />
                   <div className="card-copy">
                     <span>BLUEPRINT</span>
@@ -410,15 +427,20 @@ export default function App() {
             </div>
           </section>
 
-          <section className="section-block community-section">
+          <section className="section-block community-section" id="community-creations">
             <div className="section-heading">
               <div>
                 <span className="section-kicker">MADE WITH LUMINA</span>
                 <h2>Community Creations</h2>
               </div>
               <div className="community-actions">
-                <button className="filter-button"><LayoutGrid size={16} /> Explore</button>
-                <button className="view-all">View All <ChevronRight size={15} /></button>
+                <button
+                  className="filter-button"
+                  onClick={() => document.getElementById('community-creations')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <LayoutGrid size={16} /> Explore
+                </button>
+                <button className="view-all" onClick={() => handleNavigation('Library')}>View All <ChevronRight size={15} /></button>
               </div>
             </div>
 
@@ -430,7 +452,17 @@ export default function App() {
                       <h3>{item.title}</h3>
                       <p>by {item.author}</p>
                     </div>
-                    <button aria-label={`View ${item.title}`}><Maximize size={17} /></button>
+                    <button
+                      aria-label={`View ${item.title}`}
+                      onClick={() => openUiAction('preview', {
+                        title: item.title,
+                        subtitle: `Created by ${item.author}`,
+                        message: 'Community artwork preview. Open Library to browse and remix more creations.',
+                        artwork: `url(${galleryArtwork})`,
+                      })}
+                    >
+                      <Maximize size={17} />
+                    </button>
                   </div>
                 </Artwork>
               ))}

@@ -318,6 +318,30 @@
   font-weight: 600;
 }
 
+button.bp-card {
+  padding: 0;
+  border: 0;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.bp-card:focus-visible {
+  outline: 2px solid #7c62ff;
+  outline-offset: 3px;
+}
+
+.bp-empty-state {
+  grid-column: 1 / -1;
+  min-height: 180px;
+  border: 1px dashed rgba(255,255,255,.16);
+  border-radius: 15px;
+  color: #8e9098;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+}
+
 @media (max-width: 720px) {
   .blueprints-header {
     height: auto;

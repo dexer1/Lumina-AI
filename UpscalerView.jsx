@@ -23,7 +23,7 @@ function formatFileSize(size) {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export default function UpscalerView({ onBack }) {
+export default function UpscalerView({ onBack, onNavigate }) {
   const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -121,7 +121,7 @@ export default function UpscalerView({ onBack }) {
         <div className="upscaler-title-cluster">
           <strong>Upscaler</strong>
           <span><Coins size={12} /> 150</span>
-          <button type="button"><Shield size={12} /> Upgrade</button>
+          <button type="button" onClick={() => onNavigate?.('Plans')}><Shield size={12} /> Upgrade</button>
         </div>
       </header>
 
@@ -137,6 +137,7 @@ export default function UpscalerView({ onBack }) {
             key={index}
             className={`upscaler-history-item ${file && index === 0 ? 'has-image' : ''}`}
             aria-label={file && index === 0 ? `Open ${file.name}` : `Empty history slot ${index + 1}`}
+            disabled={!file || index !== 0}
             onClick={() => file && index === 0 && setResultUrl('')}
           >
             {file && index === 0 && <img src={previewUrl} alt="" />}

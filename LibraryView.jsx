@@ -30,6 +30,7 @@ import {
 import './LibraryView.css';
 import MorePanel from './MorePanel.jsx';
 import LuminaLogo from './LuminaLogo.jsx';
+import { openUiAction } from './uiActions.js';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: Home },
@@ -119,13 +120,13 @@ function LibrarySidebar({ onNavigate, moreOpen, onToggleMore }) {
           <span>More</span>
         </button>
         <i />
-        <button type="button" className="library-nav-item">
+        <button type="button" className="library-nav-item" onClick={() => openUiAction('settings')}>
           <Settings size={17} />
           <span>Settings</span>
         </button>
         <span className="library-balance"><Coins size={13} /> 150</span>
-        <button type="button" className="library-upgrade">Upgrade</button>
-        <button type="button" className="library-profile" aria-label="Open profile">
+        <button type="button" className="library-upgrade" onClick={() => onNavigate('Plans')}>Upgrade</button>
+        <button type="button" className="library-profile" aria-label="Open profile" onClick={() => openUiAction('profile')}>
           <b>D</b>
           <ChevronDown size={12} />
         </button>
@@ -154,7 +155,7 @@ function NeonArtwork() {
   );
 }
 
-function GenerationCard({ generation, selectMode, selected, onSelect, onRemix }) {
+function GenerationCard({ generation, selectMode, selected, onSelect, onRemix, onPreview }) {
   return (
     <article
       className={`library-card library-card--${generation.artwork} ${selected ? 'is-selected' : ''}`}
@@ -188,7 +189,15 @@ function GenerationCard({ generation, selectMode, selected, onSelect, onRemix })
       )}
 
       {generation.artwork === 'neon' && (
-        <button type="button" className="library-card-eye" aria-label="Preview Tech turn">
+        <button
+          type="button"
+          className="library-card-eye"
+          aria-label="Preview Tech turn"
+          onClick={(event) => {
+            event.stopPropagation();
+            onPreview(generation);
+          }}
+        >
           <Eye size={16} />
         </button>
       )}
@@ -369,6 +378,12 @@ export default function LibraryView({ onNavigate, onRemix }) {
               selected={selected.includes(generation.id)}
               onSelect={toggleSelection}
               onRemix={onRemix}
+              onPreview={(item) => openUiAction('preview', {
+                title: item.title,
+                subtitle: `Created by ${item.author}`,
+                message: item.prompt,
+                meta: 'Saved in Your Generations',
+              })}
             />
           ))}
 

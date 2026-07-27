@@ -17,6 +17,7 @@ import {
   X,
 } from 'lucide-react';
 import './MorePanel.css';
+import { openExternal, showUiToast } from './uiActions.js';
 
 const TOOL_ITEMS = [
   {
@@ -162,13 +163,13 @@ export default function MorePanel({ open, onClose, onNavigate, compact = false }
             <button type="button" onClick={() => setMessage('Affiliate program opened.')}>Affiliates</button>
           </div>
           <div className="more-panel-socials">
-            <button type="button" aria-label="Lumina website"><Globe2 size={17} /></button>
-            <button type="button" aria-label="Discord"><MessageCircle size={17} /></button>
-            <button type="button" aria-label="Community"><Bot size={17} /></button>
-            <button type="button" aria-label="X"><strong>𝕏</strong></button>
-            <button type="button" aria-label="Facebook"><Facebook size={17} fill="currentColor" /></button>
-            <button type="button" aria-label="Apple app"><Apple size={17} fill="currentColor" /></button>
-            <button type="button" aria-label="Google Play"><Play size={17} fill="currentColor" /></button>
+            <button type="button" aria-label="Lumina website" onClick={() => openExternal('https://github.com/dexer1/Lumina-AI')}><Globe2 size={17} /></button>
+            <button type="button" aria-label="Discord" onClick={() => openExternal('https://discord.com/')}><MessageCircle size={17} /></button>
+            <button type="button" aria-label="Community" onClick={() => openExternal('https://github.com/dexer1/Lumina-AI/issues')}><Bot size={17} /></button>
+            <button type="button" aria-label="X" onClick={() => openExternal('https://x.com/')}><strong>𝕏</strong></button>
+            <button type="button" aria-label="Facebook" onClick={() => openExternal('https://www.facebook.com/')}><Facebook size={17} fill="currentColor" /></button>
+            <button type="button" aria-label="Apple app" onClick={() => showUiToast('The Lumina iOS app is coming soon.')}><Apple size={17} fill="currentColor" /></button>
+            <button type="button" aria-label="Google Play" onClick={() => showUiToast('The Lumina Android app is coming soon.')}><Play size={17} fill="currentColor" /></button>
           </div>
         </footer>
       </aside>

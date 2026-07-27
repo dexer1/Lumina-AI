@@ -154,7 +154,7 @@ export default function FlowStateView({ onBack, onNavigate }) {
 
         <div className="flow-account">
           <span><Coins size={12} /> 150</span>
-          <button type="button"><Shield size={12} /> Upgrade</button>
+          <button type="button" onClick={() => onNavigate?.('Plans')}><Shield size={12} /> Upgrade</button>
         </div>
       </header>
 

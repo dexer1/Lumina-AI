@@ -22,6 +22,7 @@ import {
 import './WhatsNewView.css';
 import MorePanel from './MorePanel.jsx';
 import LuminaLogo from './LuminaLogo.jsx';
+import { openUiAction } from './uiActions.js';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: Home },
@@ -120,13 +121,13 @@ function WhatsNewSidebar({ onNavigate, moreOpen, onToggleMore }) {
           <span>More</span>
         </button>
         <i />
-        <button type="button" className="whats-new-nav-item" onClick={onOpenChat}>
+        <button type="button" className="whats-new-nav-item" onClick={() => openUiAction('settings')}>
           <Settings size={17} />
           <span>Settings</span>
         </button>
         <span className="whats-new-balance"><Coins size={13} /> 150</span>
         <button type="button" className="whats-new-upgrade" onClick={() => onNavigate('Plans')}>Upgrade</button>
-        <button type="button" className="whats-new-profile" aria-label="Open profile">
+        <button type="button" className="whats-new-profile" aria-label="Open profile" onClick={() => openUiAction('profile')}>
           <b>D</b>
           <ChevronDown size={12} />
         </button>

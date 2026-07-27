@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import inspirationArtwork from './assets/studio-inspiration.png';
 import './GeneratorStudio.css';
+import { showUiToast } from './uiActions.js';
 
 const MODELS = [
   {
@@ -189,6 +190,8 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
   const [videoDimensions, setVideoDimensions] = useState('16:9');
   const [videoQuality, setVideoQuality] = useState('Quality 1376x768');
   const [videoPrivate, setVideoPrivate] = useState(false);
+  const [videoCollection, setVideoCollection] = useState('No collection');
+  const [videoFeedback, setVideoFeedback] = useState('');
 
   // 3D tab specific states
   const [threeDModel, setThreeDModel] = useState('Rodin V2');
@@ -196,11 +199,16 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
   const [meshQuality, setMeshQuality] = useState('500k');
   const [material, setMaterial] = useState('All');
   const [threeDPrivate, setThreeDPrivate] = useState(false);
+  const [threeDCollection, setThreeDCollection] = useState('No collection');
+  const [threeDAdvanced, setThreeDAdvanced] = useState(false);
+  const [referenceFiles, setReferenceFiles] = useState([]);
+  const [threeDJobs, setThreeDJobs] = useState(0);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const isDrawingRef = useRef(false);
   const fileInputRef = useRef(null);
+  const referenceInputRef = useRef(null);
 
   const selectedModel = MODELS.find((model) => model.id === selectedModelId) || MODELS[0];
   const selectedStyle = STYLES.find((style) => style.id === selectedStyleId) || STYLES[0];
@@ -212,6 +220,27 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
 
   const selectedSlideCount = parsedSlides.filter((_, index) => !disabledSlideIndices.has(index)).length;
   const isGenerating = imagesHistory.some((item) => item.status === 'loading');
+
+  const enhancePrompt = () => {
+    const cleanPrompt = prompt.trim();
+    if (!cleanPrompt) {
+      setPrompt('A cinematic product scene with dramatic lighting, refined materials, balanced composition, and rich detail');
+      showUiToast('Added an example prompt.', 'success');
+      return;
+    }
+    if (/balanced composition/i.test(cleanPrompt)) {
+      showUiToast('Prompt is already enhanced.');
+      return;
+    }
+    setPrompt(`${cleanPrompt}, balanced composition, cinematic lighting, refined materials, rich detail, high visual clarity`);
+    showUiToast('Prompt enhanced.', 'success');
+  };
+
+  const selectReferenceFiles = (fileList) => {
+    const files = Array.from(fileList || []).filter((file) => file.type.startsWith('image/')).slice(0, 6);
+    setReferenceFiles(files);
+    if (files.length) showUiToast(`${files.length} reference image${files.length > 1 ? 's' : ''} attached.`, 'success');
+  };
 
   useEffect(() => {
     fetch('/api/gemini/status')
@@ -498,9 +527,9 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
         <div className="creation-title">AI Creation <HelpCircle size={14} /></div>
         <div className="creation-account">
           <span className="credit-pill"><Coins size={14} /> 150</span>
-          <button className="upgrade-pill"><Zap size={13} /> Upgrade</button>
+          <button className="upgrade-pill" onClick={() => onNavigate?.('plans')}><Zap size={13} /> Upgrade</button>
           <span className={`api-status ${apiReady ? 'api-status--ready' : ''}`}><i />{apiReady === null ? 'API check' : apiReady ? 'API secured' : 'API unavailable'}</span>
-          <button className="top-settings" onClick={() => setSettingsOpen(true)}><Settings2 size={16} /></button>
+          <button className="top-settings" aria-label="Open generation settings" onClick={() => setSettingsOpen(true)}><Settings2 size={16} /></button>
         </div>
       </header>
 
@@ -558,7 +587,7 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
               </label>
 
               <div className="sidebar-section video-styles-section">
-                <div className="sidebar-label">Styles <button className="clear-all">Clear all</button></div>
+                <div className="sidebar-label">Styles <button className="clear-all" onClick={() => showUiToast('Video style randomizers cleared.', 'success')}>Clear all</button></div>
                 <div className="video-style-cards">
                   <div className="video-style-card">
                     <div className="vs-icon"><FileText size={16} /></div>
@@ -585,7 +614,11 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
               </div>
 
               <div className="sidebar-section">
-                <div className="sidebar-label">Video Dimensions <HelpCircle size={12} /><button className="auto-btn"><Maximize size={10} /> Auto</button></div>
+                <div className="sidebar-label">Video Dimensions <HelpCircle size={12} /><button className="auto-btn" onClick={() => {
+                  const automatic = window.innerWidth < 700 ? '9:16' : '16:9';
+                  setVideoDimensions(automatic);
+                  showUiToast(`Auto dimensions set to ${automatic}.`, 'success');
+                }}><Maximize size={10} /> Auto</button></div>
                 <div className="dimension-grid video-dims">
                   {['1:1', '16:9', '9:16'].map(val => {
                     const [w, h] = val.split(':');
@@ -620,8 +653,8 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
               </div>
               
               <div className="sidebar-section">
-                <button className="sidebar-switch collection-dropdown">
-                  <span>Add to Collection <HelpCircle size={12} /></span>
+                <button className="sidebar-switch collection-dropdown" onClick={() => setVideoCollection((value) => value === 'No collection' ? 'Campaign videos' : 'No collection')}>
+                  <span>{videoCollection === 'No collection' ? 'Add to Collection' : videoCollection} <HelpCircle size={12} /></span>
                   <ChevronDown size={14} />
                 </button>
               </div>
@@ -673,15 +706,16 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
               </div>
 
               <div className="sidebar-section">
-                <button className="sidebar-switch collection-dropdown">
+                <button className={`sidebar-switch collection-dropdown ${threeDAdvanced ? 'is-active' : ''}`} onClick={() => setThreeDAdvanced((value) => !value)}>
                   <span>Advanced Settings <HelpCircle size={12} /></span>
                   <ChevronDown size={14} />
                 </button>
+                {threeDAdvanced && <div className="studio-inline-panel">Texture baking and topology cleanup will use the selected mesh quality.</div>}
               </div>
 
               <div className="sidebar-section" style={{ marginTop: '0' }}>
-                <button className="sidebar-switch collection-dropdown">
-                  <span>Add to Collection <HelpCircle size={12} /></span>
+                <button className="sidebar-switch collection-dropdown" onClick={() => setThreeDCollection((value) => value === 'No collection' ? '3D concepts' : 'No collection')}>
+                  <span>{threeDCollection === 'No collection' ? 'Add to Collection' : threeDCollection} <HelpCircle size={12} /></span>
                   <ChevronDown size={14} />
                 </button>
               </div>
@@ -695,17 +729,33 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
           <section className={`prompt-workspace ${isDragging ? 'is-dragging' : ''}`} onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }} onDragLeave={() => setIsDragging(false)} onDrop={handleDrop}>
             {activeTab === '3d' ? (
               <div className="three-d-prompt-bar">
-                <button className="prompt-attach"><ImageIcon size={18} /></button>
+                <button className="prompt-attach" onClick={() => referenceInputRef.current?.click()} aria-label="Attach 3D reference images">
+                  <ImageIcon size={18} />
+                  {referenceFiles.length > 0 && <small className="reference-count">{referenceFiles.length}</small>}
+                </button>
                 <div className="three-d-tip">
-                  <HelpCircle size={14} /> Tip: All images should show the same character or object from different angles. <a href="#">Use This Blueprint</a> to create your reference views.
+                  <HelpCircle size={14} /> Tip: All images should show the same character or object from different angles. <a href="#" onClick={(event) => {
+                    event.preventDefault();
+                    onNavigate?.('blueprints');
+                  }}>Use This Blueprint</a> to create your reference views.
                 </div>
-                <button className="prompt-generate three-d-generate" disabled>Generate <span>400</span></button>
+                <button
+                  className="prompt-generate three-d-generate"
+                  disabled={!referenceFiles.length}
+                  onClick={() => {
+                    setThreeDJobs((count) => count + 1);
+                    showUiToast('3D generation added to the queue.', 'success');
+                  }}
+                >
+                  Generate <span>{threeDJobs ? `#${threeDJobs + 1}` : '400'}</span>
+                </button>
+                <input ref={referenceInputRef} hidden multiple type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => selectReferenceFiles(event.target.files)} />
               </div>
             ) : (
               <div className="prompt-bar">
-                <button className="prompt-attach" onClick={() => fileInputRef.current?.click()}><ImageIcon size={18} /></button>
+                <button className="prompt-attach" aria-label="Attach prompt reference" onClick={() => fileInputRef.current?.click()}><ImageIcon size={18} /></button>
                 <textarea rows="1" value={prompt} onChange={(event) => { setPrompt(event.target.value); setDisabledSlideIndices(new Set()); }} placeholder="Type a prompt..." />
-                <button className="prompt-magic"><Sparkles size={17} /></button>
+                <button className="prompt-magic" onClick={enhancePrompt} aria-label="Enhance prompt"><Sparkles size={17} /></button>
                 <button className="prompt-generate" onClick={handleGenerate} disabled={!prompt.trim()}>{isGenerating ? <LoaderCircle className="spin" size={16} /> : <Sparkles size={15} />} Generate <span>{selectedSlideCount * numGenerations || ''}</span></button>
               </div>
             )}
@@ -713,7 +763,7 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
               <button className={activeTab === 'image' ? 'is-active' : ''} onClick={() => setActiveTab('image')}><ImageIcon size={15} /> Image</button>
               <button className={activeTab === 'video' ? 'is-active' : ''} onClick={() => setActiveTab('video')}><Play size={14} /> Video</button>
               <button className={activeTab === '3d' ? 'is-active' : ''} onClick={() => setActiveTab('3d')}><Globe2 size={14} /> 3D</button>
-              <button><Volume2 size={14} /> Audio <small>New</small></button>
+              <button onClick={() => onNavigate?.('audio')}><Volume2 size={14} /> Audio <small>New</small></button>
               <button onClick={() => onNavigate?.('flow')}><Workflow size={14} /> Flow State</button>
               <button onClick={() => onNavigate?.('blueprints')}><GitBranch size={14} /> Blueprints</button>
               <button className="mobile-settings" onClick={() => setSettingsOpen(true)}><Settings2 size={14} /> Settings</button>
@@ -762,8 +812,12 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
                 <div className="video-prompt-text">{prompt || 'fire bg'}</div>
                 <div className="video-prompt-actions">
                   <div className="video-pa-left">
-                    <button className="vp-btn iterate-btn"><Sparkles size={14}/> Iterate</button>
-                    <button className="vp-btn dots-btn">...</button>
+                    <button className="vp-btn iterate-btn" onClick={() => {
+                      setPrompt((current) => current || 'fire bg');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      showUiToast('Prompt restored for another iteration.', 'success');
+                    }}><Sparkles size={14}/> Iterate</button>
+                    <button className="vp-btn dots-btn" onClick={() => showUiToast('Video actions: iterate, download, or report output.')}>...</button>
                     <div className="vp-tags">
                       <span className="vp-tag">Illustrative Albedo</span>
                       <span className="vp-tag">1280×720</span>
@@ -773,8 +827,14 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
                   </div>
                   <div className="video-pa-right">
                     <span className="how-was-it">How was this output?</span>
-                    <button className="vp-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg></button>
-                    <button className="vp-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg></button>
+                    <button className={`vp-btn ${videoFeedback === 'up' ? 'is-active' : ''}`} aria-label="Like video output" aria-pressed={videoFeedback === 'up'} onClick={() => {
+                      setVideoFeedback('up');
+                      showUiToast('Thanks for the feedback.', 'success');
+                    }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg></button>
+                    <button className={`vp-btn ${videoFeedback === 'down' ? 'is-active' : ''}`} aria-label="Dislike video output" aria-pressed={videoFeedback === 'down'} onClick={() => {
+                      setVideoFeedback('down');
+                      showUiToast('Feedback recorded. We will improve this output.', 'success');
+                    }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg></button>
                   </div>
                 </div>
 
@@ -820,7 +880,7 @@ export default function GeneratorStudio({ initialPrompt = '', initialTab = 'imag
                     <span className="vp-tag">Fast</span>
                   </div>
                   <div className="three-d-actions-row">
-                    <button className="vp-btn dots-btn">...</button>
+                    <button className="vp-btn dots-btn" onClick={() => showUiToast('3D actions: preview, download, or remove generation.')}>...</button>
                   </div>
                 </div>
               </div>

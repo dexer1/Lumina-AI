@@ -1219,6 +1219,43 @@ body,
   width: 100%;
 }
 
+.studio-inline-panel {
+  margin-top: 7px;
+  padding: 9px 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px;
+  color: #96969e;
+  background: #17171a;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.reference-count {
+  position: absolute;
+  right: -4px;
+  top: -5px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  color: #fff;
+  background: #7459ef;
+  display: grid;
+  place-items: center;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.prompt-attach {
+  position: relative;
+}
+
+.vp-btn.is-active {
+  color: #a997ff;
+  border-color: rgba(117,87,246,.55);
+  background: rgba(117,87,246,.13);
+}
+
 .video-switch {
   margin-bottom: 0;
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   AudioLines,
@@ -10,6 +10,7 @@ import {
   Globe2,
   Image as ImageIcon,
   Music2,
+  Pause,
   Play,
   RefreshCcw,
   Search,
@@ -74,6 +75,65 @@ export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
   const [collection, setCollection] = useState(COLLECTIONS[0]);
   const [collectionOpen, setCollectionOpen] = useState(false);
   const [generations, setGenerations] = useState([]);
+  const [playingTrack, setPlayingTrack] = useState(null);
+  const promptInputRef = useRef(null);
+  const playbackRef = useRef(null);
+
+  const stopPlayback = () => {
+    const playback = playbackRef.current;
+    playbackRef.current = null;
+    if (playback) {
+      window.clearTimeout(playback.timer);
+      try { playback.oscillator.stop(); } catch { /* already stopped */ }
+      playback.context.close().catch(() => {});
+    }
+    setPlayingTrack(null);
+  };
+
+  useEffect(() => () => {
+    const playback = playbackRef.current;
+    if (!playback) return;
+    window.clearTimeout(playback.timer);
+    try { playback.oscillator.stop(); } catch { /* already stopped */ }
+    playback.context.close().catch(() => {});
+  }, []);
+
+  const togglePlayback = (index) => {
+    if (playingTrack === index) {
+      stopPlayback();
+      return;
+    }
+
+    stopPlayback();
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+      setPlayingTrack(index);
+      return;
+    }
+
+    const context = new AudioContextClass();
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = index % 2 ? 'triangle' : 'sine';
+    oscillator.frequency.value = 180 + (index * 55);
+    gain.gain.setValueAtTime(0.0001, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.045, context.currentTime + 0.08);
+    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 3.8);
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start();
+    setPlayingTrack(index);
+
+    const timer = window.setTimeout(() => {
+      if (playbackRef.current?.oscillator === oscillator) {
+        playbackRef.current = null;
+        setPlayingTrack(null);
+        oscillator.stop();
+        context.close().catch(() => {});
+      }
+    }, 4000);
+    playbackRef.current = { context, oscillator, timer };
+  };
 
   const resetSettings = () => {
     setDuration(60);
@@ -111,7 +171,7 @@ export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
           <strong>AI Creation</strong>
           <CircleHelp size={15} />
           <span className="audio-credit"><Coins size={14} /> 150</span>
-          <button type="button" className="audio-upgrade"><BadgeCheck size={13} /> Upgrade</button>
+          <button type="button" className="audio-upgrade" onClick={() => onNavigate?.('Plans')}><BadgeCheck size={13} /> Upgrade</button>
         </div>
 
         <div className="audio-legacy">
@@ -224,6 +284,7 @@ export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
         <main className="audio-workspace">
           <form className="audio-prompt" onSubmit={generateAudio}>
             <input
+              ref={promptInputRef}
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
               placeholder="Type a prompt..."
@@ -264,8 +325,16 @@ export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
               </div>
               <div className="audio-result-grid">
                 {generations.map((item, index) => (
-                  <article className="audio-result-card" key={item.id}>
-                    <button type="button" className="audio-play" aria-label={`Play track ${index + 1}`}><Play size={17} fill="currentColor" /></button>
+                  <article className={`audio-result-card ${playingTrack === index ? 'is-playing' : ''}`} key={item.id}>
+                    <button
+                      type="button"
+                      className="audio-play"
+                      aria-label={`${playingTrack === index ? 'Pause' : 'Play'} track ${index + 1}`}
+                      aria-pressed={playingTrack === index}
+                      onClick={() => togglePlayback(index)}
+                    >
+                      {playingTrack === index ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}
+                    </button>
                     <div className="audio-result-copy">
                       <strong>Generation {index + 1}</strong>
                       <p>{item.prompt}</p>
@@ -280,7 +349,17 @@ export default function AudioStudio({ onBack, onOpenImage, onNavigate }) {
         </main>
       </div>
 
-      <button type="button" className="audio-search" aria-label="Search"><Search size={22} /></button>
+      <button
+        type="button"
+        className="audio-search"
+        aria-label="Search"
+        onClick={() => {
+          promptInputRef.current?.focus();
+          promptInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }}
+      >
+        <Search size={22} />
+      </button>
     </div>
   );
 }
